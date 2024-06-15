@@ -1020,8 +1020,8 @@
     {
       "kind": "DojoContract",
       "address": "0x167359df980dc4435a6baf982375ac517e6f138b5a10d93f2a1acf3c17f5b88",
-      "class_hash": "0x27ee1613c2c20aae341a85b655f0d2e70411a5f48604bfca76db41ccae4f4d9",
-      "original_class_hash": "0x27ee1613c2c20aae341a85b655f0d2e70411a5f48604bfca76db41ccae4f4d9",
+      "class_hash": "0x16c5573e06de065b7a87ded4463b4f39bdcbd8ca2cff290ce2aec932ea94246",
+      "original_class_hash": "0x16c5573e06de065b7a87ded4463b4f39bdcbd8ca2cff290ce2aec932ea94246",
       "base_class_hash": "0x22f3e55b61d86c2ac5239fa3b3b8761f26b9a5c0b5f61ddbd5d756ced498b46",
       "abi": [
         {
@@ -1219,7 +1219,7 @@
         },
         {
           "type": "struct",
-          "name": "starkgo::systems::move::PlayerMove",
+          "name": "starkgo::models::move::PlayerMove",
           "members": [
             {
               "name": "move_position",
@@ -1237,19 +1237,19 @@
         },
         {
           "type": "enum",
-          "name": "starkgo::systems::move::Move",
+          "name": "starkgo::models::move::Move",
           "variants": [
             {
               "name": "Play",
-              "type": "starkgo::systems::move::PlayerMove"
+              "type": "starkgo::models::move::PlayerMove"
             },
             {
               "name": "Pass",
-              "type": "starkgo::systems::move::PlayerMove"
+              "type": "starkgo::models::move::PlayerMove"
             },
             {
               "name": "Resign",
-              "type": "starkgo::systems::move::PlayerMove"
+              "type": "starkgo::models::move::PlayerMove"
             }
           ]
         },
@@ -1266,11 +1266,7 @@
                   "type": "core::felt252"
                 }
               ],
-              "outputs": [
-                {
-                  "type": "core::felt252"
-                }
-              ],
+              "outputs": [],
               "state_mutability": "external"
             },
             {
@@ -1291,6 +1287,22 @@
             },
             {
               "type": "function",
+              "name": "set_black",
+              "inputs": [
+                {
+                  "name": "game_id",
+                  "type": "core::felt252"
+                },
+                {
+                  "name": "is_controller",
+                  "type": "core::bool"
+                }
+              ],
+              "outputs": [],
+              "state_mutability": "external"
+            },
+            {
+              "type": "function",
               "name": "move",
               "inputs": [
                 {
@@ -1299,7 +1311,7 @@
                 },
                 {
                   "name": "move",
-                  "type": "starkgo::systems::move::Move"
+                  "type": "starkgo::models::move::Move"
                 }
               ],
               "outputs": [],
@@ -1420,7 +1432,7 @@
         },
         {
           "name": "controller_has_black",
-          "type": "bool",
+          "type": "StartVote",
           "key": false
         },
         {
@@ -1434,8 +1446,8 @@
           "key": false
         }
       ],
-      "class_hash": "0x70aae269d11a3f7f9b44d3a0beb184206a111a67b8b3474ca95755ff41a471f",
-      "original_class_hash": "0x70aae269d11a3f7f9b44d3a0beb184206a111a67b8b3474ca95755ff41a471f",
+      "class_hash": "0xae4041679e780d457e1c68f020ecf704940bd6d240bd017e37cf05d6e8ea95",
+      "original_class_hash": "0xae4041679e780d457e1c68f020ecf704940bd6d240bd017e37cf05d6e8ea95",
       "abi": [
         {
           "type": "impl",
@@ -1815,6 +1827,34 @@
           ]
         },
         {
+          "type": "enum",
+          "name": "core::option::Option::<core::bool>",
+          "variants": [
+            {
+              "name": "Some",
+              "type": "core::bool"
+            },
+            {
+              "name": "None",
+              "type": "()"
+            }
+          ]
+        },
+        {
+          "type": "struct",
+          "name": "starkgo::models::game::StartVote",
+          "members": [
+            {
+              "name": "controller",
+              "type": "core::option::Option::<core::bool>"
+            },
+            {
+              "name": "opponent",
+              "type": "core::option::Option::<core::bool>"
+            }
+          ]
+        },
+        {
           "type": "struct",
           "name": "core::integer::u256",
           "members": [
@@ -1868,7 +1908,7 @@
             },
             {
               "name": "controller_has_black",
-              "type": "core::bool"
+              "type": "starkgo::models::game::StartVote"
             },
             {
               "name": "board",

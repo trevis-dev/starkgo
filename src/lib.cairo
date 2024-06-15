@@ -1,11 +1,11 @@
 mod systems {
     mod actions;
-    mod move;
 }
 
 mod models {
     mod board;
     mod game;
+    mod move;
 }
 
 mod tests {

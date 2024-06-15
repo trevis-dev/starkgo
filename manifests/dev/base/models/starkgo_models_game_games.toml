@@ -1,6 +1,6 @@
 kind = "DojoModel"
-class_hash = "0x70aae269d11a3f7f9b44d3a0beb184206a111a67b8b3474ca95755ff41a471f"
-original_class_hash = "0x70aae269d11a3f7f9b44d3a0beb184206a111a67b8b3474ca95755ff41a471f"
+class_hash = "0xae4041679e780d457e1c68f020ecf704940bd6d240bd017e37cf05d6e8ea95"
+original_class_hash = "0xae4041679e780d457e1c68f020ecf704940bd6d240bd017e37cf05d6e8ea95"
 abi = "manifests/dev/abis/base/models/starkgo_models_game_games.json"
 name = "starkgo::models::game::games"
 
@@ -26,7 +26,7 @@ key = false
 
 [[members]]
 name = "controller_has_black"
-type = "bool"
+type = "StartVote"
 key = false
 
 [[members]]

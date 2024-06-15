@@ -377,6 +377,34 @@
     ]
   },
   {
+    "type": "enum",
+    "name": "core::option::Option::<core::bool>",
+    "variants": [
+      {
+        "name": "Some",
+        "type": "core::bool"
+      },
+      {
+        "name": "None",
+        "type": "()"
+      }
+    ]
+  },
+  {
+    "type": "struct",
+    "name": "starkgo::models::game::StartVote",
+    "members": [
+      {
+        "name": "controller",
+        "type": "core::option::Option::<core::bool>"
+      },
+      {
+        "name": "opponent",
+        "type": "core::option::Option::<core::bool>"
+      }
+    ]
+  },
+  {
     "type": "struct",
     "name": "core::integer::u256",
     "members": [
@@ -430,7 +458,7 @@
       },
       {
         "name": "controller_has_black",
-        "type": "core::bool"
+        "type": "starkgo::models::game::StartVote"
       },
       {
         "name": "board",

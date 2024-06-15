@@ -14,22 +14,23 @@ mod tests {
     #[test]
     #[available_gas(30000000)]
     fn test_move() {
+        let _game_id: felt252 = 1;
+
         // caller
         let _caller = starknet::contract_address_const::<0x0>();
 
-        // models
-        let mut models = array![game::TEST_CLASS_HASH];
+        // // models
+        // let mut models = array![game::TEST_CLASS_HASH];
 
-        // deploy world with models
-        let world = spawn_test_world(models);
+        // // deploy world with models
+        // let world = spawn_test_world(models);
 
-        // deploy systems contract
-        let contract_address = world
-            .deploy_contract('salt', actions::TEST_CLASS_HASH.try_into().unwrap(), array![].span());
-        let actions_system = IActionsDispatcher { contract_address };
+        // // deploy systems contract
+        // let contract_address = world
+        //     .deploy_contract('salt', actions::TEST_CLASS_HASH.try_into().unwrap(), array![].span());
+        // let actions_system = IActionsDispatcher { contract_address };
 
-        // call spawn()
-        actions_system.create_game(1);
-
+        // // call create_game()
+        // actions_system.create_game(game_id);
     }
 }

@@ -1,6 +1,5 @@
 use starkgo::models::board::Position;
 
-
 # [derive(Serde, Copy, Drop, Introspect, PartialEq)]
 enum Move {
     Play: PlayerMove,
@@ -14,7 +13,6 @@ struct PlayerMove {
     is_pass: bool,
     is_resign: bool,
 }
-
 
 fn main() {
     let _pass_move = Move::Pass(PlayerMove { 

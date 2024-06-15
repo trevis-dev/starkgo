@@ -22,8 +22,8 @@ name = "dojo::base::base"
 [[contracts]]
 kind = "DojoContract"
 address = "0x167359df980dc4435a6baf982375ac517e6f138b5a10d93f2a1acf3c17f5b88"
-class_hash = "0x27ee1613c2c20aae341a85b655f0d2e70411a5f48604bfca76db41ccae4f4d9"
-original_class_hash = "0x27ee1613c2c20aae341a85b655f0d2e70411a5f48604bfca76db41ccae4f4d9"
+class_hash = "0x16c5573e06de065b7a87ded4463b4f39bdcbd8ca2cff290ce2aec932ea94246"
+original_class_hash = "0x16c5573e06de065b7a87ded4463b4f39bdcbd8ca2cff290ce2aec932ea94246"
 base_class_hash = "0x22f3e55b61d86c2ac5239fa3b3b8761f26b9a5c0b5f61ddbd5d756ced498b46"
 abi = "manifests/dev/abis/deployments/contracts/starkgo_systems_actions_actions.json"
 reads = []
@@ -34,8 +34,8 @@ name = "starkgo::systems::actions::actions"
 
 [[models]]
 kind = "DojoModel"
-class_hash = "0x70aae269d11a3f7f9b44d3a0beb184206a111a67b8b3474ca95755ff41a471f"
-original_class_hash = "0x70aae269d11a3f7f9b44d3a0beb184206a111a67b8b3474ca95755ff41a471f"
+class_hash = "0xae4041679e780d457e1c68f020ecf704940bd6d240bd017e37cf05d6e8ea95"
+original_class_hash = "0xae4041679e780d457e1c68f020ecf704940bd6d240bd017e37cf05d6e8ea95"
 abi = "manifests/dev/abis/deployments/models/starkgo_models_game_games.json"
 name = "starkgo::models::game::games"
 
@@ -61,7 +61,7 @@ key = false
 
 [[models.members]]
 name = "controller_has_black"
-type = "bool"
+type = "StartVote"
 key = false
 
 [[models.members]]
