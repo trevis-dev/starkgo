@@ -319,56 +319,132 @@
   },
   {
     "type": "impl",
-    "name": "movesImpl",
-    "interface_name": "starkgo::models::moves::Imoves"
+    "name": "gamesImpl",
+    "interface_name": "starkgo::models::game::Igames"
   },
   {
     "type": "enum",
-    "name": "starkgo::models::moves::Direction",
+    "name": "starkgo::models::game::GameState",
     "variants": [
+      {
+        "name": "Inexistent",
+        "type": "()"
+      },
+      {
+        "name": "Created",
+        "type": "()"
+      },
+      {
+        "name": "Joined",
+        "type": "()"
+      },
+      {
+        "name": "Ongoing",
+        "type": "()"
+      },
+      {
+        "name": "Finished",
+        "type": "()"
+      }
+    ]
+  },
+  {
+    "type": "enum",
+    "name": "core::option::Option::<core::starknet::contract_address::ContractAddress>",
+    "variants": [
+      {
+        "name": "Some",
+        "type": "core::starknet::contract_address::ContractAddress"
+      },
       {
         "name": "None",
         "type": "()"
-      },
+      }
+    ]
+  },
+  {
+    "type": "enum",
+    "name": "core::bool",
+    "variants": [
       {
-        "name": "Left",
+        "name": "False",
         "type": "()"
       },
       {
-        "name": "Right",
-        "type": "()"
-      },
-      {
-        "name": "Up",
-        "type": "()"
-      },
-      {
-        "name": "Down",
+        "name": "True",
         "type": "()"
       }
     ]
   },
   {
     "type": "struct",
-    "name": "starkgo::models::moves::Moves",
+    "name": "core::integer::u256",
     "members": [
       {
-        "name": "player",
-        "type": "core::starknet::contract_address::ContractAddress"
+        "name": "low",
+        "type": "core::integer::u128"
       },
       {
-        "name": "remaining",
-        "type": "core::integer::u8"
+        "name": "high",
+        "type": "core::integer::u128"
+      }
+    ]
+  },
+  {
+    "type": "enum",
+    "name": "starkgo::models::board::Player",
+    "variants": [
+      {
+        "name": "None",
+        "type": "()"
       },
       {
-        "name": "last_direction",
-        "type": "starkgo::models::moves::Direction"
+        "name": "Black",
+        "type": "()"
+      },
+      {
+        "name": "White",
+        "type": "()"
+      }
+    ]
+  },
+  {
+    "type": "struct",
+    "name": "starkgo::models::game::Games",
+    "members": [
+      {
+        "name": "game_id",
+        "type": "core::felt252"
+      },
+      {
+        "name": "state",
+        "type": "starkgo::models::game::GameState"
+      },
+      {
+        "name": "controller",
+        "type": "core::option::Option::<core::starknet::contract_address::ContractAddress>"
+      },
+      {
+        "name": "opponent",
+        "type": "core::option::Option::<core::starknet::contract_address::ContractAddress>"
+      },
+      {
+        "name": "controller_has_black",
+        "type": "core::bool"
+      },
+      {
+        "name": "board",
+        "type": "core::integer::u256"
+      },
+      {
+        "name": "new_turn_player",
+        "type": "starkgo::models::board::Player"
       }
     ]
   },
   {
     "type": "interface",
-    "name": "starkgo::models::moves::Imoves",
+    "name": "starkgo::models::game::Igames",
     "items": [
       {
         "type": "function",
@@ -376,7 +452,7 @@
         "inputs": [
           {
             "name": "model",
-            "type": "starkgo::models::moves::Moves"
+            "type": "starkgo::models::game::Games"
           }
         ],
         "outputs": [],
@@ -386,7 +462,7 @@
   },
   {
     "type": "event",
-    "name": "starkgo::models::moves::moves::Event",
+    "name": "starkgo::models::game::games::Event",
     "kind": "enum",
     "variants": []
   }

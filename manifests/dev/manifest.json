@@ -999,8 +999,8 @@
         ]
       }
     ],
-    "address": "0xb4079627ebab1cd3cf9fd075dda1ad2454a7a448bf659591f259efa2519b18",
-    "transaction_hash": "0x3a729aa09b4ad351fbc724f94c6d599037a53d7d9b5a182097a60fb09d0486c",
+    "address": "0x7bf4dbc57ac4213d82f13516bae388f7980897fc16fbc64eb6d156a9d739030",
+    "transaction_hash": "0x5703941c492c1836dd00f2a93625b4f4b4161dda1e99c6ac62e3a19236e66c7",
     "block_number": 3,
     "seed": "starkgo",
     "metadata": {
@@ -1019,9 +1019,9 @@
   "contracts": [
     {
       "kind": "DojoContract",
-      "address": "0x3610b797baec740e2fa25ae90b4a57d92b04f48a1fdbae1ae203eaf9723c1a0",
-      "class_hash": "0x458bee9fe13c5762aca6b1ca74e64c389e0ee1357e15e1f11f0d402eb5a1f18",
-      "original_class_hash": "0x458bee9fe13c5762aca6b1ca74e64c389e0ee1357e15e1f11f0d402eb5a1f18",
+      "address": "0x167359df980dc4435a6baf982375ac517e6f138b5a10d93f2a1acf3c17f5b88",
+      "class_hash": "0x27ee1613c2c20aae341a85b655f0d2e70411a5f48604bfca76db41ccae4f4d9",
+      "original_class_hash": "0x27ee1613c2c20aae341a85b655f0d2e70411a5f48604bfca76db41ccae4f4d9",
       "base_class_hash": "0x22f3e55b61d86c2ac5239fa3b3b8761f26b9a5c0b5f61ddbd5d756ced498b46",
       "abi": [
         {
@@ -1085,27 +1085,171 @@
         },
         {
           "type": "enum",
-          "name": "starkgo::models::moves::Direction",
+          "name": "core::bool",
+          "variants": [
+            {
+              "name": "False",
+              "type": "()"
+            },
+            {
+              "name": "True",
+              "type": "()"
+            }
+          ]
+        },
+        {
+          "type": "enum",
+          "name": "starkgo::models::board::Row",
           "variants": [
             {
               "name": "None",
               "type": "()"
             },
             {
-              "name": "Left",
+              "name": "A",
               "type": "()"
             },
             {
-              "name": "Right",
+              "name": "B",
               "type": "()"
             },
             {
-              "name": "Up",
+              "name": "C",
               "type": "()"
             },
             {
-              "name": "Down",
+              "name": "D",
               "type": "()"
+            },
+            {
+              "name": "E",
+              "type": "()"
+            },
+            {
+              "name": "F",
+              "type": "()"
+            },
+            {
+              "name": "G",
+              "type": "()"
+            },
+            {
+              "name": "H",
+              "type": "()"
+            },
+            {
+              "name": "I",
+              "type": "()"
+            }
+          ]
+        },
+        {
+          "type": "enum",
+          "name": "starkgo::models::board::Column",
+          "variants": [
+            {
+              "name": "None",
+              "type": "()"
+            },
+            {
+              "name": "One",
+              "type": "()"
+            },
+            {
+              "name": "Two",
+              "type": "()"
+            },
+            {
+              "name": "Three",
+              "type": "()"
+            },
+            {
+              "name": "Four",
+              "type": "()"
+            },
+            {
+              "name": "Five",
+              "type": "()"
+            },
+            {
+              "name": "Six",
+              "type": "()"
+            },
+            {
+              "name": "Seven",
+              "type": "()"
+            },
+            {
+              "name": "Eight",
+              "type": "()"
+            },
+            {
+              "name": "Nine",
+              "type": "()"
+            }
+          ]
+        },
+        {
+          "type": "struct",
+          "name": "starkgo::models::board::Position",
+          "members": [
+            {
+              "name": "x",
+              "type": "starkgo::models::board::Row"
+            },
+            {
+              "name": "y",
+              "type": "starkgo::models::board::Column"
+            }
+          ]
+        },
+        {
+          "type": "enum",
+          "name": "core::option::Option::<starkgo::models::board::Position>",
+          "variants": [
+            {
+              "name": "Some",
+              "type": "starkgo::models::board::Position"
+            },
+            {
+              "name": "None",
+              "type": "()"
+            }
+          ]
+        },
+        {
+          "type": "struct",
+          "name": "starkgo::systems::move::PlayerMove",
+          "members": [
+            {
+              "name": "move_position",
+              "type": "core::option::Option::<starkgo::models::board::Position>"
+            },
+            {
+              "name": "is_pass",
+              "type": "core::bool"
+            },
+            {
+              "name": "is_resign",
+              "type": "core::bool"
+            }
+          ]
+        },
+        {
+          "type": "enum",
+          "name": "starkgo::systems::move::Move",
+          "variants": [
+            {
+              "name": "Play",
+              "type": "starkgo::systems::move::PlayerMove"
+            },
+            {
+              "name": "Pass",
+              "type": "starkgo::systems::move::PlayerMove"
+            },
+            {
+              "name": "Resign",
+              "type": "starkgo::systems::move::PlayerMove"
             }
           ]
         },
@@ -1115,9 +1259,34 @@
           "items": [
             {
               "type": "function",
-              "name": "spawn",
-              "inputs": [],
-              "outputs": [],
+              "name": "create_game",
+              "inputs": [
+                {
+                  "name": "game_id",
+                  "type": "core::felt252"
+                }
+              ],
+              "outputs": [
+                {
+                  "type": "core::felt252"
+                }
+              ],
+              "state_mutability": "external"
+            },
+            {
+              "type": "function",
+              "name": "join_game",
+              "inputs": [
+                {
+                  "name": "game_id",
+                  "type": "core::felt252"
+                }
+              ],
+              "outputs": [
+                {
+                  "type": "core::bool"
+                }
+              ],
               "state_mutability": "external"
             },
             {
@@ -1125,8 +1294,12 @@
               "name": "move",
               "inputs": [
                 {
-                  "name": "direction",
-                  "type": "starkgo::models::moves::Direction"
+                  "name": "game_id",
+                  "type": "core::felt252"
+                },
+                {
+                  "name": "move",
+                  "type": "starkgo::systems::move::Move"
                 }
               ],
               "outputs": [],
@@ -1214,8 +1387,7 @@
       ],
       "reads": [],
       "writes": [
-        "Position",
-        "Moves"
+        "Games"
       ],
       "computed": [],
       "init_calldata": [],
@@ -1227,18 +1399,43 @@
       "kind": "DojoModel",
       "members": [
         {
-          "name": "player",
-          "type": "ContractAddress",
+          "name": "game_id",
+          "type": "felt252",
           "key": true
         },
         {
-          "name": "directions",
-          "type": "Array<Direction>",
+          "name": "state",
+          "type": "GameState",
+          "key": false
+        },
+        {
+          "name": "controller",
+          "type": "Option<ContractAddress>",
+          "key": false
+        },
+        {
+          "name": "opponent",
+          "type": "Option<ContractAddress>",
+          "key": false
+        },
+        {
+          "name": "controller_has_black",
+          "type": "bool",
+          "key": false
+        },
+        {
+          "name": "board",
+          "type": "Board",
+          "key": false
+        },
+        {
+          "name": "new_turn_player",
+          "type": "Player",
           "key": false
         }
       ],
-      "class_hash": "0x13fc796dd2d767ca4051ee20d673074f74b6e6b072bef1926ba429e427c8080",
-      "original_class_hash": "0x13fc796dd2d767ca4051ee20d673074f74b6e6b072bef1926ba429e427c8080",
+      "class_hash": "0x70aae269d11a3f7f9b44d3a0beb184206a111a67b8b3474ca95755ff41a471f",
+      "original_class_hash": "0x70aae269d11a3f7f9b44d3a0beb184206a111a67b8b3474ca95755ff41a471f",
       "abi": [
         {
           "type": "impl",
@@ -1560,468 +1757,132 @@
         },
         {
           "type": "impl",
-          "name": "directions_availableImpl",
-          "interface_name": "starkgo::models::moves::Idirections_available"
+          "name": "gamesImpl",
+          "interface_name": "starkgo::models::game::Igames"
         },
         {
           "type": "enum",
-          "name": "starkgo::models::moves::Direction",
+          "name": "starkgo::models::game::GameState",
           "variants": [
             {
-              "name": "None",
+              "name": "Inexistent",
               "type": "()"
             },
             {
-              "name": "Left",
+              "name": "Created",
               "type": "()"
             },
             {
-              "name": "Right",
+              "name": "Joined",
               "type": "()"
             },
             {
-              "name": "Up",
+              "name": "Ongoing",
               "type": "()"
             },
             {
-              "name": "Down",
+              "name": "Finished",
               "type": "()"
-            }
-          ]
-        },
-        {
-          "type": "struct",
-          "name": "starkgo::models::moves::DirectionsAvailable",
-          "members": [
-            {
-              "name": "player",
-              "type": "core::starknet::contract_address::ContractAddress"
-            },
-            {
-              "name": "directions",
-              "type": "core::array::Array::<starkgo::models::moves::Direction>"
-            }
-          ]
-        },
-        {
-          "type": "interface",
-          "name": "starkgo::models::moves::Idirections_available",
-          "items": [
-            {
-              "type": "function",
-              "name": "ensure_abi",
-              "inputs": [
-                {
-                  "name": "model",
-                  "type": "starkgo::models::moves::DirectionsAvailable"
-                }
-              ],
-              "outputs": [],
-              "state_mutability": "view"
-            }
-          ]
-        },
-        {
-          "type": "event",
-          "name": "starkgo::models::moves::directions_available::Event",
-          "kind": "enum",
-          "variants": []
-        }
-      ],
-      "name": "starkgo::models::moves::directions_available"
-    },
-    {
-      "kind": "DojoModel",
-      "members": [
-        {
-          "name": "player",
-          "type": "ContractAddress",
-          "key": true
-        },
-        {
-          "name": "remaining",
-          "type": "u8",
-          "key": false
-        },
-        {
-          "name": "last_direction",
-          "type": "Direction",
-          "key": false
-        }
-      ],
-      "class_hash": "0x4cccc308e899b0db11f3e47bcc3bf555d348102e1d89c85e8ba72f5f1098107",
-      "original_class_hash": "0x4cccc308e899b0db11f3e47bcc3bf555d348102e1d89c85e8ba72f5f1098107",
-      "abi": [
-        {
-          "type": "impl",
-          "name": "DojoModelImpl",
-          "interface_name": "dojo::model::IModel"
-        },
-        {
-          "type": "struct",
-          "name": "core::byte_array::ByteArray",
-          "members": [
-            {
-              "name": "data",
-              "type": "core::array::Array::<core::bytes_31::bytes31>"
-            },
-            {
-              "name": "pending_word",
-              "type": "core::felt252"
-            },
-            {
-              "name": "pending_word_len",
-              "type": "core::integer::u32"
             }
           ]
         },
         {
           "type": "enum",
-          "name": "core::option::Option::<core::integer::u32>",
+          "name": "core::option::Option::<core::starknet::contract_address::ContractAddress>",
           "variants": [
             {
               "name": "Some",
-              "type": "core::integer::u32"
-            },
-            {
-              "name": "None",
-              "type": "()"
-            }
-          ]
-        },
-        {
-          "type": "struct",
-          "name": "core::array::Span::<core::integer::u8>",
-          "members": [
-            {
-              "name": "snapshot",
-              "type": "@core::array::Array::<core::integer::u8>"
-            }
-          ]
-        },
-        {
-          "type": "struct",
-          "name": "dojo::database::introspect::FieldLayout",
-          "members": [
-            {
-              "name": "selector",
-              "type": "core::felt252"
-            },
-            {
-              "name": "layout",
-              "type": "dojo::database::introspect::Layout"
-            }
-          ]
-        },
-        {
-          "type": "struct",
-          "name": "core::array::Span::<dojo::database::introspect::FieldLayout>",
-          "members": [
-            {
-              "name": "snapshot",
-              "type": "@core::array::Array::<dojo::database::introspect::FieldLayout>"
-            }
-          ]
-        },
-        {
-          "type": "struct",
-          "name": "core::array::Span::<dojo::database::introspect::Layout>",
-          "members": [
-            {
-              "name": "snapshot",
-              "type": "@core::array::Array::<dojo::database::introspect::Layout>"
-            }
-          ]
-        },
-        {
-          "type": "enum",
-          "name": "dojo::database::introspect::Layout",
-          "variants": [
-            {
-              "name": "Fixed",
-              "type": "core::array::Span::<core::integer::u8>"
-            },
-            {
-              "name": "Struct",
-              "type": "core::array::Span::<dojo::database::introspect::FieldLayout>"
-            },
-            {
-              "name": "Tuple",
-              "type": "core::array::Span::<dojo::database::introspect::Layout>"
-            },
-            {
-              "name": "Array",
-              "type": "core::array::Span::<dojo::database::introspect::Layout>"
-            },
-            {
-              "name": "ByteArray",
-              "type": "()"
-            },
-            {
-              "name": "Enum",
-              "type": "core::array::Span::<dojo::database::introspect::FieldLayout>"
-            }
-          ]
-        },
-        {
-          "type": "struct",
-          "name": "core::array::Span::<core::felt252>",
-          "members": [
-            {
-              "name": "snapshot",
-              "type": "@core::array::Array::<core::felt252>"
-            }
-          ]
-        },
-        {
-          "type": "struct",
-          "name": "dojo::database::introspect::Member",
-          "members": [
-            {
-              "name": "name",
-              "type": "core::felt252"
-            },
-            {
-              "name": "attrs",
-              "type": "core::array::Span::<core::felt252>"
-            },
-            {
-              "name": "ty",
-              "type": "dojo::database::introspect::Ty"
-            }
-          ]
-        },
-        {
-          "type": "struct",
-          "name": "core::array::Span::<dojo::database::introspect::Member>",
-          "members": [
-            {
-              "name": "snapshot",
-              "type": "@core::array::Array::<dojo::database::introspect::Member>"
-            }
-          ]
-        },
-        {
-          "type": "struct",
-          "name": "dojo::database::introspect::Struct",
-          "members": [
-            {
-              "name": "name",
-              "type": "core::felt252"
-            },
-            {
-              "name": "attrs",
-              "type": "core::array::Span::<core::felt252>"
-            },
-            {
-              "name": "children",
-              "type": "core::array::Span::<dojo::database::introspect::Member>"
-            }
-          ]
-        },
-        {
-          "type": "struct",
-          "name": "core::array::Span::<(core::felt252, dojo::database::introspect::Ty)>",
-          "members": [
-            {
-              "name": "snapshot",
-              "type": "@core::array::Array::<(core::felt252, dojo::database::introspect::Ty)>"
-            }
-          ]
-        },
-        {
-          "type": "struct",
-          "name": "dojo::database::introspect::Enum",
-          "members": [
-            {
-              "name": "name",
-              "type": "core::felt252"
-            },
-            {
-              "name": "attrs",
-              "type": "core::array::Span::<core::felt252>"
-            },
-            {
-              "name": "children",
-              "type": "core::array::Span::<(core::felt252, dojo::database::introspect::Ty)>"
-            }
-          ]
-        },
-        {
-          "type": "struct",
-          "name": "core::array::Span::<dojo::database::introspect::Ty>",
-          "members": [
-            {
-              "name": "snapshot",
-              "type": "@core::array::Array::<dojo::database::introspect::Ty>"
-            }
-          ]
-        },
-        {
-          "type": "enum",
-          "name": "dojo::database::introspect::Ty",
-          "variants": [
-            {
-              "name": "Primitive",
-              "type": "core::felt252"
-            },
-            {
-              "name": "Struct",
-              "type": "dojo::database::introspect::Struct"
-            },
-            {
-              "name": "Enum",
-              "type": "dojo::database::introspect::Enum"
-            },
-            {
-              "name": "Tuple",
-              "type": "core::array::Span::<dojo::database::introspect::Ty>"
-            },
-            {
-              "name": "Array",
-              "type": "core::array::Span::<dojo::database::introspect::Ty>"
-            },
-            {
-              "name": "ByteArray",
-              "type": "()"
-            }
-          ]
-        },
-        {
-          "type": "interface",
-          "name": "dojo::model::IModel",
-          "items": [
-            {
-              "type": "function",
-              "name": "selector",
-              "inputs": [],
-              "outputs": [
-                {
-                  "type": "core::felt252"
-                }
-              ],
-              "state_mutability": "view"
-            },
-            {
-              "type": "function",
-              "name": "name",
-              "inputs": [],
-              "outputs": [
-                {
-                  "type": "core::byte_array::ByteArray"
-                }
-              ],
-              "state_mutability": "view"
-            },
-            {
-              "type": "function",
-              "name": "version",
-              "inputs": [],
-              "outputs": [
-                {
-                  "type": "core::integer::u8"
-                }
-              ],
-              "state_mutability": "view"
-            },
-            {
-              "type": "function",
-              "name": "unpacked_size",
-              "inputs": [],
-              "outputs": [
-                {
-                  "type": "core::option::Option::<core::integer::u32>"
-                }
-              ],
-              "state_mutability": "view"
-            },
-            {
-              "type": "function",
-              "name": "packed_size",
-              "inputs": [],
-              "outputs": [
-                {
-                  "type": "core::option::Option::<core::integer::u32>"
-                }
-              ],
-              "state_mutability": "view"
-            },
-            {
-              "type": "function",
-              "name": "layout",
-              "inputs": [],
-              "outputs": [
-                {
-                  "type": "dojo::database::introspect::Layout"
-                }
-              ],
-              "state_mutability": "view"
-            },
-            {
-              "type": "function",
-              "name": "schema",
-              "inputs": [],
-              "outputs": [
-                {
-                  "type": "dojo::database::introspect::Ty"
-                }
-              ],
-              "state_mutability": "view"
-            }
-          ]
-        },
-        {
-          "type": "impl",
-          "name": "movesImpl",
-          "interface_name": "starkgo::models::moves::Imoves"
-        },
-        {
-          "type": "enum",
-          "name": "starkgo::models::moves::Direction",
-          "variants": [
-            {
-              "name": "None",
-              "type": "()"
-            },
-            {
-              "name": "Left",
-              "type": "()"
-            },
-            {
-              "name": "Right",
-              "type": "()"
-            },
-            {
-              "name": "Up",
-              "type": "()"
-            },
-            {
-              "name": "Down",
-              "type": "()"
-            }
-          ]
-        },
-        {
-          "type": "struct",
-          "name": "starkgo::models::moves::Moves",
-          "members": [
-            {
-              "name": "player",
               "type": "core::starknet::contract_address::ContractAddress"
             },
             {
-              "name": "remaining",
-              "type": "core::integer::u8"
+              "name": "None",
+              "type": "()"
+            }
+          ]
+        },
+        {
+          "type": "enum",
+          "name": "core::bool",
+          "variants": [
+            {
+              "name": "False",
+              "type": "()"
             },
             {
-              "name": "last_direction",
-              "type": "starkgo::models::moves::Direction"
+              "name": "True",
+              "type": "()"
+            }
+          ]
+        },
+        {
+          "type": "struct",
+          "name": "core::integer::u256",
+          "members": [
+            {
+              "name": "low",
+              "type": "core::integer::u128"
+            },
+            {
+              "name": "high",
+              "type": "core::integer::u128"
+            }
+          ]
+        },
+        {
+          "type": "enum",
+          "name": "starkgo::models::board::Player",
+          "variants": [
+            {
+              "name": "None",
+              "type": "()"
+            },
+            {
+              "name": "Black",
+              "type": "()"
+            },
+            {
+              "name": "White",
+              "type": "()"
+            }
+          ]
+        },
+        {
+          "type": "struct",
+          "name": "starkgo::models::game::Games",
+          "members": [
+            {
+              "name": "game_id",
+              "type": "core::felt252"
+            },
+            {
+              "name": "state",
+              "type": "starkgo::models::game::GameState"
+            },
+            {
+              "name": "controller",
+              "type": "core::option::Option::<core::starknet::contract_address::ContractAddress>"
+            },
+            {
+              "name": "opponent",
+              "type": "core::option::Option::<core::starknet::contract_address::ContractAddress>"
+            },
+            {
+              "name": "controller_has_black",
+              "type": "core::bool"
+            },
+            {
+              "name": "board",
+              "type": "core::integer::u256"
+            },
+            {
+              "name": "new_turn_player",
+              "type": "starkgo::models::board::Player"
             }
           ]
         },
         {
           "type": "interface",
-          "name": "starkgo::models::moves::Imoves",
+          "name": "starkgo::models::game::Igames",
           "items": [
             {
               "type": "function",
@@ -2029,7 +1890,7 @@
               "inputs": [
                 {
                   "name": "model",
-                  "type": "starkgo::models::moves::Moves"
+                  "type": "starkgo::models::game::Games"
                 }
               ],
               "outputs": [],
@@ -2039,407 +1900,12 @@
         },
         {
           "type": "event",
-          "name": "starkgo::models::moves::moves::Event",
+          "name": "starkgo::models::game::games::Event",
           "kind": "enum",
           "variants": []
         }
       ],
-      "name": "starkgo::models::moves::moves"
-    },
-    {
-      "kind": "DojoModel",
-      "members": [
-        {
-          "name": "player",
-          "type": "ContractAddress",
-          "key": true
-        },
-        {
-          "name": "vec",
-          "type": "Vec2",
-          "key": false
-        }
-      ],
-      "class_hash": "0x4312e0e9fa6d912c293311798591e5022744a5fbebefc5ddfcfcc9b7c0c9be1",
-      "original_class_hash": "0x4312e0e9fa6d912c293311798591e5022744a5fbebefc5ddfcfcc9b7c0c9be1",
-      "abi": [
-        {
-          "type": "impl",
-          "name": "DojoModelImpl",
-          "interface_name": "dojo::model::IModel"
-        },
-        {
-          "type": "struct",
-          "name": "core::byte_array::ByteArray",
-          "members": [
-            {
-              "name": "data",
-              "type": "core::array::Array::<core::bytes_31::bytes31>"
-            },
-            {
-              "name": "pending_word",
-              "type": "core::felt252"
-            },
-            {
-              "name": "pending_word_len",
-              "type": "core::integer::u32"
-            }
-          ]
-        },
-        {
-          "type": "enum",
-          "name": "core::option::Option::<core::integer::u32>",
-          "variants": [
-            {
-              "name": "Some",
-              "type": "core::integer::u32"
-            },
-            {
-              "name": "None",
-              "type": "()"
-            }
-          ]
-        },
-        {
-          "type": "struct",
-          "name": "core::array::Span::<core::integer::u8>",
-          "members": [
-            {
-              "name": "snapshot",
-              "type": "@core::array::Array::<core::integer::u8>"
-            }
-          ]
-        },
-        {
-          "type": "struct",
-          "name": "dojo::database::introspect::FieldLayout",
-          "members": [
-            {
-              "name": "selector",
-              "type": "core::felt252"
-            },
-            {
-              "name": "layout",
-              "type": "dojo::database::introspect::Layout"
-            }
-          ]
-        },
-        {
-          "type": "struct",
-          "name": "core::array::Span::<dojo::database::introspect::FieldLayout>",
-          "members": [
-            {
-              "name": "snapshot",
-              "type": "@core::array::Array::<dojo::database::introspect::FieldLayout>"
-            }
-          ]
-        },
-        {
-          "type": "struct",
-          "name": "core::array::Span::<dojo::database::introspect::Layout>",
-          "members": [
-            {
-              "name": "snapshot",
-              "type": "@core::array::Array::<dojo::database::introspect::Layout>"
-            }
-          ]
-        },
-        {
-          "type": "enum",
-          "name": "dojo::database::introspect::Layout",
-          "variants": [
-            {
-              "name": "Fixed",
-              "type": "core::array::Span::<core::integer::u8>"
-            },
-            {
-              "name": "Struct",
-              "type": "core::array::Span::<dojo::database::introspect::FieldLayout>"
-            },
-            {
-              "name": "Tuple",
-              "type": "core::array::Span::<dojo::database::introspect::Layout>"
-            },
-            {
-              "name": "Array",
-              "type": "core::array::Span::<dojo::database::introspect::Layout>"
-            },
-            {
-              "name": "ByteArray",
-              "type": "()"
-            },
-            {
-              "name": "Enum",
-              "type": "core::array::Span::<dojo::database::introspect::FieldLayout>"
-            }
-          ]
-        },
-        {
-          "type": "struct",
-          "name": "core::array::Span::<core::felt252>",
-          "members": [
-            {
-              "name": "snapshot",
-              "type": "@core::array::Array::<core::felt252>"
-            }
-          ]
-        },
-        {
-          "type": "struct",
-          "name": "dojo::database::introspect::Member",
-          "members": [
-            {
-              "name": "name",
-              "type": "core::felt252"
-            },
-            {
-              "name": "attrs",
-              "type": "core::array::Span::<core::felt252>"
-            },
-            {
-              "name": "ty",
-              "type": "dojo::database::introspect::Ty"
-            }
-          ]
-        },
-        {
-          "type": "struct",
-          "name": "core::array::Span::<dojo::database::introspect::Member>",
-          "members": [
-            {
-              "name": "snapshot",
-              "type": "@core::array::Array::<dojo::database::introspect::Member>"
-            }
-          ]
-        },
-        {
-          "type": "struct",
-          "name": "dojo::database::introspect::Struct",
-          "members": [
-            {
-              "name": "name",
-              "type": "core::felt252"
-            },
-            {
-              "name": "attrs",
-              "type": "core::array::Span::<core::felt252>"
-            },
-            {
-              "name": "children",
-              "type": "core::array::Span::<dojo::database::introspect::Member>"
-            }
-          ]
-        },
-        {
-          "type": "struct",
-          "name": "core::array::Span::<(core::felt252, dojo::database::introspect::Ty)>",
-          "members": [
-            {
-              "name": "snapshot",
-              "type": "@core::array::Array::<(core::felt252, dojo::database::introspect::Ty)>"
-            }
-          ]
-        },
-        {
-          "type": "struct",
-          "name": "dojo::database::introspect::Enum",
-          "members": [
-            {
-              "name": "name",
-              "type": "core::felt252"
-            },
-            {
-              "name": "attrs",
-              "type": "core::array::Span::<core::felt252>"
-            },
-            {
-              "name": "children",
-              "type": "core::array::Span::<(core::felt252, dojo::database::introspect::Ty)>"
-            }
-          ]
-        },
-        {
-          "type": "struct",
-          "name": "core::array::Span::<dojo::database::introspect::Ty>",
-          "members": [
-            {
-              "name": "snapshot",
-              "type": "@core::array::Array::<dojo::database::introspect::Ty>"
-            }
-          ]
-        },
-        {
-          "type": "enum",
-          "name": "dojo::database::introspect::Ty",
-          "variants": [
-            {
-              "name": "Primitive",
-              "type": "core::felt252"
-            },
-            {
-              "name": "Struct",
-              "type": "dojo::database::introspect::Struct"
-            },
-            {
-              "name": "Enum",
-              "type": "dojo::database::introspect::Enum"
-            },
-            {
-              "name": "Tuple",
-              "type": "core::array::Span::<dojo::database::introspect::Ty>"
-            },
-            {
-              "name": "Array",
-              "type": "core::array::Span::<dojo::database::introspect::Ty>"
-            },
-            {
-              "name": "ByteArray",
-              "type": "()"
-            }
-          ]
-        },
-        {
-          "type": "interface",
-          "name": "dojo::model::IModel",
-          "items": [
-            {
-              "type": "function",
-              "name": "selector",
-              "inputs": [],
-              "outputs": [
-                {
-                  "type": "core::felt252"
-                }
-              ],
-              "state_mutability": "view"
-            },
-            {
-              "type": "function",
-              "name": "name",
-              "inputs": [],
-              "outputs": [
-                {
-                  "type": "core::byte_array::ByteArray"
-                }
-              ],
-              "state_mutability": "view"
-            },
-            {
-              "type": "function",
-              "name": "version",
-              "inputs": [],
-              "outputs": [
-                {
-                  "type": "core::integer::u8"
-                }
-              ],
-              "state_mutability": "view"
-            },
-            {
-              "type": "function",
-              "name": "unpacked_size",
-              "inputs": [],
-              "outputs": [
-                {
-                  "type": "core::option::Option::<core::integer::u32>"
-                }
-              ],
-              "state_mutability": "view"
-            },
-            {
-              "type": "function",
-              "name": "packed_size",
-              "inputs": [],
-              "outputs": [
-                {
-                  "type": "core::option::Option::<core::integer::u32>"
-                }
-              ],
-              "state_mutability": "view"
-            },
-            {
-              "type": "function",
-              "name": "layout",
-              "inputs": [],
-              "outputs": [
-                {
-                  "type": "dojo::database::introspect::Layout"
-                }
-              ],
-              "state_mutability": "view"
-            },
-            {
-              "type": "function",
-              "name": "schema",
-              "inputs": [],
-              "outputs": [
-                {
-                  "type": "dojo::database::introspect::Ty"
-                }
-              ],
-              "state_mutability": "view"
-            }
-          ]
-        },
-        {
-          "type": "impl",
-          "name": "positionImpl",
-          "interface_name": "starkgo::models::position::Iposition"
-        },
-        {
-          "type": "struct",
-          "name": "starkgo::models::position::Vec2",
-          "members": [
-            {
-              "name": "x",
-              "type": "core::integer::u32"
-            },
-            {
-              "name": "y",
-              "type": "core::integer::u32"
-            }
-          ]
-        },
-        {
-          "type": "struct",
-          "name": "starkgo::models::position::Position",
-          "members": [
-            {
-              "name": "player",
-              "type": "core::starknet::contract_address::ContractAddress"
-            },
-            {
-              "name": "vec",
-              "type": "starkgo::models::position::Vec2"
-            }
-          ]
-        },
-        {
-          "type": "interface",
-          "name": "starkgo::models::position::Iposition",
-          "items": [
-            {
-              "type": "function",
-              "name": "ensure_abi",
-              "inputs": [
-                {
-                  "name": "model",
-                  "type": "starkgo::models::position::Position"
-                }
-              ],
-              "outputs": [],
-              "state_mutability": "view"
-            }
-          ]
-        },
-        {
-          "type": "event",
-          "name": "starkgo::models::position::position::Event",
-          "kind": "enum",
-          "variants": []
-        }
-      ],
-      "name": "starkgo::models::position::position"
+      "name": "starkgo::models::game::games"
     }
   ]
 }

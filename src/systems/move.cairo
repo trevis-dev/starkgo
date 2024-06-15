@@ -1,14 +1,14 @@
 use starkgo::models::board::Position;
 
 
-# [derive(Serde, Copy, Drop, Introspect, PartialEq, Print)]
+# [derive(Serde, Copy, Drop, Introspect, PartialEq)]
 enum Move {
     Play: PlayerMove,
     Pass: PlayerMove,
     Resign: PlayerMove,
 }
 
-# [derive(Serde, Copy, Drop, Introspect, PartialEq, Print)]
+# [derive(Serde, Copy, Drop, Introspect, PartialEq)]
 struct PlayerMove {
     move_position: Option<Position>,
     is_pass: bool,

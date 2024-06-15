@@ -8,7 +8,7 @@ sierra-replace-ids = true
 
 [scripts]
 migrate = "sozo build && sozo migrate apply"
-spawn = "./scripts/spawn.sh"
+create_game = "./scripts/create_game.sh"
 move = "./scripts/move.sh"
 
 [dependencies]

@@ -67,7 +67,6 @@ fn print_board(board: @u256) {
 }
 
 fn move(ref grid: u256, player: Player, position: Position) {
-    println!("{} plays on {}", player, position);
     set_value(ref grid, position.x.into(), position.y.into(), player.into());
 }
 
@@ -218,12 +217,37 @@ impl PositionDisplay of Display<Position> {
     }
 }
 
-fn main() {
-    let mut grid: u256 = 0;
-    move(ref grid, Player::Black, Position {x: Row::D, y: Column::Six });
-    move(ref grid, Player::White, Position {x: Row::E, y: Column::Five});
-    move(ref grid, Player::Black, Position {x: Row::E, y: Column::Six });
 
-    print_board(@grid);
-    println!(" ");
+#[cfg(test)]
+mod tests {
+    use super::{Position, Player, Row, Column, move, print_board, set_value};
+
+    #[test]
+    #[available_gas(12000000)]
+    fn test_valid_range() {
+        let mut grid: u256 = 0;
+        move(ref grid, Player::Black, Position {x: Row::D, y: Column::Six });
+        assert(grid == 79228162514264337593543950336, 'Incorrect state after 1st move.');
+        move(ref grid, Player::White, Position {x: Row::E, y: Column::Five});
+        assert(grid == 79230580365903566851893362688, 'Incorrect state after 2nd move.');
+        move(ref grid, Player::Black, Position {x: Row::I, y: Column::Nine});
+        assert(grid == 1461501637330902918282915413082186586507825905664, 'Incorrect state after 2nd move.');
+    }
+
+
+    #[test]
+    #[should_panic(expected: ("Coordinates out of bounds", ))]
+    #[available_gas(100000)]
+    fn test_outside_range() {
+        let mut grid: u256 = 0;
+        set_value(ref grid, x: 10, y: 4, value: 1);
+    }
+
+    #[test]
+    #[should_panic(expected: ("Value must be 0, 1, or 2", ))]
+    #[available_gas(100000)]
+    fn test_incorrect_value() {
+        let mut grid: u256 = 0;
+        set_value(ref grid, x: 5, y: 4, value: 4);
+    }
 }

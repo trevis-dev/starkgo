@@ -3,8 +3,8 @@ kind = "WorldContract"
 class_hash = "0x3f63cecdc4964acafb921ba2934c6507d1b3c344edb64c2762cf08053169ab9"
 original_class_hash = "0x3f63cecdc4964acafb921ba2934c6507d1b3c344edb64c2762cf08053169ab9"
 abi = "manifests/dev/abis/deployments/dojo_world_world.json"
-address = "0xb4079627ebab1cd3cf9fd075dda1ad2454a7a448bf659591f259efa2519b18"
-transaction_hash = "0x3a729aa09b4ad351fbc724f94c6d599037a53d7d9b5a182097a60fb09d0486c"
+address = "0x7bf4dbc57ac4213d82f13516bae388f7980897fc16fbc64eb6d156a9d739030"
+transaction_hash = "0x5703941c492c1836dd00f2a93625b4f4b4161dda1e99c6ac62e3a19236e66c7"
 block_number = 3
 seed = "starkgo"
 name = "dojo::world::world"
@@ -21,72 +21,55 @@ name = "dojo::base::base"
 
 [[contracts]]
 kind = "DojoContract"
-address = "0x3610b797baec740e2fa25ae90b4a57d92b04f48a1fdbae1ae203eaf9723c1a0"
-class_hash = "0x458bee9fe13c5762aca6b1ca74e64c389e0ee1357e15e1f11f0d402eb5a1f18"
-original_class_hash = "0x458bee9fe13c5762aca6b1ca74e64c389e0ee1357e15e1f11f0d402eb5a1f18"
+address = "0x167359df980dc4435a6baf982375ac517e6f138b5a10d93f2a1acf3c17f5b88"
+class_hash = "0x27ee1613c2c20aae341a85b655f0d2e70411a5f48604bfca76db41ccae4f4d9"
+original_class_hash = "0x27ee1613c2c20aae341a85b655f0d2e70411a5f48604bfca76db41ccae4f4d9"
 base_class_hash = "0x22f3e55b61d86c2ac5239fa3b3b8761f26b9a5c0b5f61ddbd5d756ced498b46"
 abi = "manifests/dev/abis/deployments/contracts/starkgo_systems_actions_actions.json"
 reads = []
-writes = [
-    "Position",
-    "Moves",
-]
+writes = ["Games"]
 computed = []
 init_calldata = []
 name = "starkgo::systems::actions::actions"
 
 [[models]]
 kind = "DojoModel"
-class_hash = "0x13fc796dd2d767ca4051ee20d673074f74b6e6b072bef1926ba429e427c8080"
-original_class_hash = "0x13fc796dd2d767ca4051ee20d673074f74b6e6b072bef1926ba429e427c8080"
-abi = "manifests/dev/abis/deployments/models/starkgo_models_moves_directions_available.json"
-name = "starkgo::models::moves::directions_available"
+class_hash = "0x70aae269d11a3f7f9b44d3a0beb184206a111a67b8b3474ca95755ff41a471f"
+original_class_hash = "0x70aae269d11a3f7f9b44d3a0beb184206a111a67b8b3474ca95755ff41a471f"
+abi = "manifests/dev/abis/deployments/models/starkgo_models_game_games.json"
+name = "starkgo::models::game::games"
 
 [[models.members]]
-name = "player"
-type = "ContractAddress"
+name = "game_id"
+type = "felt252"
 key = true
 
 [[models.members]]
-name = "directions"
-type = "Array<Direction>"
-key = false
-
-[[models]]
-kind = "DojoModel"
-class_hash = "0x4cccc308e899b0db11f3e47bcc3bf555d348102e1d89c85e8ba72f5f1098107"
-original_class_hash = "0x4cccc308e899b0db11f3e47bcc3bf555d348102e1d89c85e8ba72f5f1098107"
-abi = "manifests/dev/abis/deployments/models/starkgo_models_moves_moves.json"
-name = "starkgo::models::moves::moves"
-
-[[models.members]]
-name = "player"
-type = "ContractAddress"
-key = true
-
-[[models.members]]
-name = "remaining"
-type = "u8"
+name = "state"
+type = "GameState"
 key = false
 
 [[models.members]]
-name = "last_direction"
-type = "Direction"
+name = "controller"
+type = "Option<ContractAddress>"
 key = false
 
-[[models]]
-kind = "DojoModel"
-class_hash = "0x4312e0e9fa6d912c293311798591e5022744a5fbebefc5ddfcfcc9b7c0c9be1"
-original_class_hash = "0x4312e0e9fa6d912c293311798591e5022744a5fbebefc5ddfcfcc9b7c0c9be1"
-abi = "manifests/dev/abis/deployments/models/starkgo_models_position_position.json"
-name = "starkgo::models::position::position"
+[[models.members]]
+name = "opponent"
+type = "Option<ContractAddress>"
+key = false
 
 [[models.members]]
-name = "player"
-type = "ContractAddress"
-key = true
+name = "controller_has_black"
+type = "bool"
+key = false
 
 [[models.members]]
-name = "vec"
-type = "Vec2"
+name = "board"
+type = "Board"
+key = false
+
+[[models.members]]
+name = "new_turn_player"
+type = "Player"
 key = false

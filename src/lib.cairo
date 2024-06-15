@@ -6,7 +6,6 @@ mod systems {
 mod models {
     mod board;
     mod game;
-    mod position;
 }
 
 mod tests {

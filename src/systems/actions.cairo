@@ -2,7 +2,6 @@ use starkgo::models::game::{Games, GameState};
 use starkgo::models::board::{Board, Player, Position};
 use starkgo::systems::move::Move;
 
-// define the interface
 #[dojo::interface]
 trait IActions {
     fn create_game(ref world: IWorldDispatcher, game_id: felt252) -> felt252;
@@ -10,7 +9,6 @@ trait IActions {
     fn move(ref world: IWorldDispatcher, game_id: felt252, move: Move);
 }
 
-// dojo decorator
 #[dojo::contract]
 mod actions {
     use super::{IActions, GameState, Games, Move, Player, Position};

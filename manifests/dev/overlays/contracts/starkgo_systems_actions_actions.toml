@@ -1,4 +1,4 @@
 name = "starkgo::systems::actions::actions"
 reads = []
-writes = ["Position", "Moves"]
+writes = ["Games"]
 init_calldata = []
