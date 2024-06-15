@@ -320,11 +320,11 @@
   {
     "type": "impl",
     "name": "positionImpl",
-    "interface_name": "dojo_starter::models::position::Iposition"
+    "interface_name": "starkgo::models::position::Iposition"
   },
   {
     "type": "struct",
-    "name": "dojo_starter::models::position::Vec2",
+    "name": "starkgo::models::position::Vec2",
     "members": [
       {
         "name": "x",
@@ -338,7 +338,7 @@
   },
   {
     "type": "struct",
-    "name": "dojo_starter::models::position::Position",
+    "name": "starkgo::models::position::Position",
     "members": [
       {
         "name": "player",
@@ -346,13 +346,13 @@
       },
       {
         "name": "vec",
-        "type": "dojo_starter::models::position::Vec2"
+        "type": "starkgo::models::position::Vec2"
       }
     ]
   },
   {
     "type": "interface",
-    "name": "dojo_starter::models::position::Iposition",
+    "name": "starkgo::models::position::Iposition",
     "items": [
       {
         "type": "function",
@@ -360,7 +360,7 @@
         "inputs": [
           {
             "name": "model",
-            "type": "dojo_starter::models::position::Position"
+            "type": "starkgo::models::position::Position"
           }
         ],
         "outputs": [],
@@ -370,7 +370,7 @@
   },
   {
     "type": "event",
-    "name": "dojo_starter::models::position::position::Event",
+    "name": "starkgo::models::position::position::Event",
     "kind": "enum",
     "variants": []
   }

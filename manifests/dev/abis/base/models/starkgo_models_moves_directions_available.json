@@ -319,40 +319,52 @@
   },
   {
     "type": "impl",
-    "name": "positionImpl",
-    "interface_name": "dojo_starter::models::position::Iposition"
+    "name": "directions_availableImpl",
+    "interface_name": "starkgo::models::moves::Idirections_available"
   },
   {
-    "type": "struct",
-    "name": "dojo_starter::models::position::Vec2",
-    "members": [
+    "type": "enum",
+    "name": "starkgo::models::moves::Direction",
+    "variants": [
       {
-        "name": "x",
-        "type": "core::integer::u32"
+        "name": "None",
+        "type": "()"
       },
       {
-        "name": "y",
-        "type": "core::integer::u32"
+        "name": "Left",
+        "type": "()"
+      },
+      {
+        "name": "Right",
+        "type": "()"
+      },
+      {
+        "name": "Up",
+        "type": "()"
+      },
+      {
+        "name": "Down",
+        "type": "()"
       }
     ]
   },
   {
     "type": "struct",
-    "name": "dojo_starter::models::position::Position",
+    "name": "starkgo::models::moves::DirectionsAvailable",
     "members": [
       {
         "name": "player",
         "type": "core::starknet::contract_address::ContractAddress"
       },
       {
-        "name": "vec",
-        "type": "dojo_starter::models::position::Vec2"
+        "name": "directions",
+        "type": "core::array::Array::<starkgo::models::moves::Direction>"
       }
     ]
   },
   {
     "type": "interface",
-    "name": "dojo_starter::models::position::Iposition",
+    "name": "starkgo::models::moves::Idirections_available",
     "items": [
       {
         "type": "function",
@@ -360,7 +372,7 @@
         "inputs": [
           {
             "name": "model",
-            "type": "dojo_starter::models::position::Position"
+            "type": "starkgo::models::moves::DirectionsAvailable"
           }
         ],
         "outputs": [],
@@ -370,7 +382,7 @@
   },
   {
     "type": "event",
-    "name": "dojo_starter::models::position::position::Event",
+    "name": "starkgo::models::moves::directions_available::Event",
     "kind": "enum",
     "variants": []
   }

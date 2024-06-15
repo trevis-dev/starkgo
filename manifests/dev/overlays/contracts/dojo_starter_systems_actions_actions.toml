@@ -1,4 +1,4 @@
-name = "dojo_starter::systems::actions::actions"
+name = "starkgo::systems::actions::actions"
 reads = []
 writes = ["Position", "Moves"]
 init_calldata = []

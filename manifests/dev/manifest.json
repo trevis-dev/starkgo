@@ -1002,7 +1002,7 @@
     "address": "0xb4079627ebab1cd3cf9fd075dda1ad2454a7a448bf659591f259efa2519b18",
     "transaction_hash": "0x3a729aa09b4ad351fbc724f94c6d599037a53d7d9b5a182097a60fb09d0486c",
     "block_number": 3,
-    "seed": "dojo_starter",
+    "seed": "starkgo",
     "metadata": {
       "profile_name": "dev",
       "rpc_url": "http://localhost:5050/"
@@ -1081,11 +1081,11 @@
         {
           "type": "impl",
           "name": "ActionsImpl",
-          "interface_name": "dojo_starter::systems::actions::IActions"
+          "interface_name": "starkgo::systems::actions::IActions"
         },
         {
           "type": "enum",
-          "name": "dojo_starter::models::moves::Direction",
+          "name": "starkgo::models::moves::Direction",
           "variants": [
             {
               "name": "None",
@@ -1111,7 +1111,7 @@
         },
         {
           "type": "interface",
-          "name": "dojo_starter::systems::actions::IActions",
+          "name": "starkgo::systems::actions::IActions",
           "items": [
             {
               "type": "function",
@@ -1126,7 +1126,7 @@
               "inputs": [
                 {
                   "name": "direction",
-                  "type": "dojo_starter::models::moves::Direction"
+                  "type": "starkgo::models::moves::Direction"
                 }
               ],
               "outputs": [],
@@ -1137,11 +1137,11 @@
         {
           "type": "impl",
           "name": "IDojoInitImpl",
-          "interface_name": "dojo_starter::systems::actions::actions::IDojoInit"
+          "interface_name": "starkgo::systems::actions::actions::IDojoInit"
         },
         {
           "type": "interface",
-          "name": "dojo_starter::systems::actions::actions::IDojoInit",
+          "name": "starkgo::systems::actions::actions::IDojoInit",
           "items": [
             {
               "type": "function",
@@ -1201,7 +1201,7 @@
         },
         {
           "type": "event",
-          "name": "dojo_starter::systems::actions::actions::Event",
+          "name": "starkgo::systems::actions::actions::Event",
           "kind": "enum",
           "variants": [
             {
@@ -1219,7 +1219,7 @@
       ],
       "computed": [],
       "init_calldata": [],
-      "name": "dojo_starter::systems::actions::actions"
+      "name": "starkgo::systems::actions::actions"
     }
   ],
   "models": [
@@ -1561,11 +1561,11 @@
         {
           "type": "impl",
           "name": "directions_availableImpl",
-          "interface_name": "dojo_starter::models::moves::Idirections_available"
+          "interface_name": "starkgo::models::moves::Idirections_available"
         },
         {
           "type": "enum",
-          "name": "dojo_starter::models::moves::Direction",
+          "name": "starkgo::models::moves::Direction",
           "variants": [
             {
               "name": "None",
@@ -1591,7 +1591,7 @@
         },
         {
           "type": "struct",
-          "name": "dojo_starter::models::moves::DirectionsAvailable",
+          "name": "starkgo::models::moves::DirectionsAvailable",
           "members": [
             {
               "name": "player",
@@ -1599,13 +1599,13 @@
             },
             {
               "name": "directions",
-              "type": "core::array::Array::<dojo_starter::models::moves::Direction>"
+              "type": "core::array::Array::<starkgo::models::moves::Direction>"
             }
           ]
         },
         {
           "type": "interface",
-          "name": "dojo_starter::models::moves::Idirections_available",
+          "name": "starkgo::models::moves::Idirections_available",
           "items": [
             {
               "type": "function",
@@ -1613,7 +1613,7 @@
               "inputs": [
                 {
                   "name": "model",
-                  "type": "dojo_starter::models::moves::DirectionsAvailable"
+                  "type": "starkgo::models::moves::DirectionsAvailable"
                 }
               ],
               "outputs": [],
@@ -1623,12 +1623,12 @@
         },
         {
           "type": "event",
-          "name": "dojo_starter::models::moves::directions_available::Event",
+          "name": "starkgo::models::moves::directions_available::Event",
           "kind": "enum",
           "variants": []
         }
       ],
-      "name": "dojo_starter::models::moves::directions_available"
+      "name": "starkgo::models::moves::directions_available"
     },
     {
       "kind": "DojoModel",
@@ -1973,11 +1973,11 @@
         {
           "type": "impl",
           "name": "movesImpl",
-          "interface_name": "dojo_starter::models::moves::Imoves"
+          "interface_name": "starkgo::models::moves::Imoves"
         },
         {
           "type": "enum",
-          "name": "dojo_starter::models::moves::Direction",
+          "name": "starkgo::models::moves::Direction",
           "variants": [
             {
               "name": "None",
@@ -2003,7 +2003,7 @@
         },
         {
           "type": "struct",
-          "name": "dojo_starter::models::moves::Moves",
+          "name": "starkgo::models::moves::Moves",
           "members": [
             {
               "name": "player",
@@ -2015,13 +2015,13 @@
             },
             {
               "name": "last_direction",
-              "type": "dojo_starter::models::moves::Direction"
+              "type": "starkgo::models::moves::Direction"
             }
           ]
         },
         {
           "type": "interface",
-          "name": "dojo_starter::models::moves::Imoves",
+          "name": "starkgo::models::moves::Imoves",
           "items": [
             {
               "type": "function",
@@ -2029,7 +2029,7 @@
               "inputs": [
                 {
                   "name": "model",
-                  "type": "dojo_starter::models::moves::Moves"
+                  "type": "starkgo::models::moves::Moves"
                 }
               ],
               "outputs": [],
@@ -2039,12 +2039,12 @@
         },
         {
           "type": "event",
-          "name": "dojo_starter::models::moves::moves::Event",
+          "name": "starkgo::models::moves::moves::Event",
           "kind": "enum",
           "variants": []
         }
       ],
-      "name": "dojo_starter::models::moves::moves"
+      "name": "starkgo::models::moves::moves"
     },
     {
       "kind": "DojoModel",
@@ -2384,11 +2384,11 @@
         {
           "type": "impl",
           "name": "positionImpl",
-          "interface_name": "dojo_starter::models::position::Iposition"
+          "interface_name": "starkgo::models::position::Iposition"
         },
         {
           "type": "struct",
-          "name": "dojo_starter::models::position::Vec2",
+          "name": "starkgo::models::position::Vec2",
           "members": [
             {
               "name": "x",
@@ -2402,7 +2402,7 @@
         },
         {
           "type": "struct",
-          "name": "dojo_starter::models::position::Position",
+          "name": "starkgo::models::position::Position",
           "members": [
             {
               "name": "player",
@@ -2410,13 +2410,13 @@
             },
             {
               "name": "vec",
-              "type": "dojo_starter::models::position::Vec2"
+              "type": "starkgo::models::position::Vec2"
             }
           ]
         },
         {
           "type": "interface",
-          "name": "dojo_starter::models::position::Iposition",
+          "name": "starkgo::models::position::Iposition",
           "items": [
             {
               "type": "function",
@@ -2424,7 +2424,7 @@
               "inputs": [
                 {
                   "name": "model",
-                  "type": "dojo_starter::models::position::Position"
+                  "type": "starkgo::models::position::Position"
                 }
               ],
               "outputs": [],
@@ -2434,12 +2434,12 @@
         },
         {
           "type": "event",
-          "name": "dojo_starter::models::position::position::Event",
+          "name": "starkgo::models::position::position::Event",
           "kind": "enum",
           "variants": []
         }
       ],
-      "name": "dojo_starter::models::position::position"
+      "name": "starkgo::models::position::position"
     }
   ]
 }
