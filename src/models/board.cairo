@@ -1,4 +1,5 @@
 use core::array::ArrayTrait;
+use core::fmt::{Display, Formatter, Error};
 
 const GRID_SIZE: usize = 9;
 const BIT_MASK: u256 = 0b11; // Mask for extracting 2 bits to store None vs Black vs White stone on each of 81 intersections;
@@ -63,7 +64,8 @@ fn print_board(board: @u256) {
     };
 }
 
-fn move(ref grid: u256, position: Position, player: Player) {
+fn move(ref grid: u256, player: Player, position: Position) {
+    println!("{} plays on {}", player, position);
     set_value(ref grid, position.x.into(), position.y.into(), player.into());
 }
 
@@ -106,7 +108,22 @@ impl RowIntoFelt252 of Into<Row, usize> {
         }
     }
 }
-
+impl RowIntoByteArray of Into<Row, ByteArray> {
+    fn into(self: Row) -> ByteArray {
+        match self {
+            Row::None => "None",
+            Row::A => "A",
+            Row::B => "B",
+            Row::C => "C",
+            Row::D => "D",
+            Row::E => "E",
+            Row::F => "F",
+            Row::G => "G",
+            Row::H => "H",
+            Row::I => "I",
+        }
+    }
+}
 
 #[derive(Serde, Copy, Drop, Introspect)]
 enum Column {
@@ -138,7 +155,22 @@ impl ColmumnIntoFelt252 of Into<Column, usize> {
         }
     }
 }
-
+impl ColmumnIntoByteArray of Into<Column, ByteArray> {
+    fn into(self: Column) -> ByteArray {
+        match self {
+            Column::None => "None",
+            Column::One => "1",
+            Column::Two => "2",
+            Column::Three => "3",
+            Column::Four => "4",
+            Column::Five => "5",
+            Column::Six => "6",
+            Column::Seven => "7",
+            Column::Eight => "8",
+            Column::Nine => "9",
+        }
+    }
+}
 
 #[derive(Serde, Copy, Drop, Introspect)]
 enum Player {
@@ -157,13 +189,38 @@ impl PlayerIntoFelt252 of Into<Player, u8> {
     }
 }
 
+impl PlayerIntoByteArray of Into<Player, ByteArray> {
+    fn into(self: Player) -> ByteArray {
+        match self {
+            Player::None => "None",
+            Player::Black => "Black",
+            Player::White => "White",
+        }
+    }
+}
+
+impl PointDisplay of Display<Player> {
+    fn fmt(self: @Player, ref f: Formatter) -> Result<(), Error> {
+        let player_name: ByteArray = (*self).into();
+
+        write!(f, "{player_name}")
+    }
+}
+
+impl PositionDisplay of Display<Position> {
+    fn fmt(self: @Position, ref f: Formatter) -> Result<(), Error> {
+        let x: ByteArray = (*self.x).into();
+        let y: ByteArray = (*self.y).into();
+
+        write!(f, "{x}{y}")
+    }
+}
+
 fn main() {
     let mut grid: u256 = 0;
-    let black = Player::Black;
-    let white = Player::White;
-    move(ref grid, Position {x: Row::D, y: Column::Six }, black);
-    move(ref grid, Position {x: Row::E, y: Column::Five}, white);
-    move(ref grid, Position {x: Row::E, y: Column::Six }, black);
+    move(ref grid, Player::Black, Position {x: Row::D, y: Column::Six });
+    move(ref grid, Player::White, Position {x: Row::E, y: Column::Five});
+    move(ref grid, Player::Black, Position {x: Row::E, y: Column::Six });
 
     print_board(@grid);
     println!(" ");
