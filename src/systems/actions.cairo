@@ -1,90 +1,126 @@
-use starkgo::models::moves::Direction;
-use starkgo::models::position::Position;
+use starkgo::models::game::{Games, GameState};
+use starkgo::models::board::{Board, Player, Position};
+use starkgo::systems::move::Move;
 
 // define the interface
 #[dojo::interface]
 trait IActions {
-    fn spawn(ref world: IWorldDispatcher);
-    fn move(ref world: IWorldDispatcher, direction: Direction);
+    fn create_game(ref world: IWorldDispatcher, game_id: felt252) -> felt252;
+    fn join_game(ref world: IWorldDispatcher, game_id: felt252) -> bool;
+    fn move(ref world: IWorldDispatcher, game_id: felt252, move: Move);
 }
 
 // dojo decorator
 #[dojo::contract]
 mod actions {
-    use super::{IActions, next_position};
+    use super::{IActions, GameState, Games, Move, Player, Position};
     use starknet::{ContractAddress, get_caller_address};
-    use starkgo::models::{
-        position::{Position, Vec2}, moves::{Moves, Direction, DirectionsAvailable}
-    };
 
     #[abi(embed_v0)]
     impl ActionsImpl of IActions<ContractState> {
-        fn spawn(ref world: IWorldDispatcher) {
-            // Get the address of the current caller, possibly the player's address.
-            let player = get_caller_address();
-            // Retrieve the player's current position from the world.
-            let position = get!(world, player, (Position));
-
-            // Update the world state with the new data.
-            // 1. Set the player's remaining moves to 100.
-            // 2. Move the player's position 10 units in both the x and y direction.
-            // 3. Set available directions to all four directions. (This is an example of how you can use an array in Dojo).
-
-            let directions_available = DirectionsAvailable {
-                player,
-                directions: array![
-                    Direction::Up,
-                    Direction::Right,
-                    Direction::Down,
-                    Direction::Left
-                ],
+        fn create_game(ref world: IWorldDispatcher, game_id: felt252) -> felt252 {
+            let playerAddress = get_caller_address();
+            let game = get!(world, game_id, (Games));
+            match game.state {
+                GameState::Inexistent => {
+                    set!(
+                        world,
+                        (
+                            Games {
+                                game_id,
+                                state: GameState::Created,
+                                controller: Option::Some(playerAddress),
+                                opponent: Option::None,
+                                controller_has_black: false,
+                                board: 0,
+                                new_turn_player: Player::None,
+                            }
+                        )
+                    );
+                },
+                _ => {
+                    panic_with_felt252('game_id already used');
+                }
             };
+            game_id
+        }
 
-            set!(
-                world,
-                (
-                    Moves { player, remaining: 100, last_direction: Direction::None(()) },
-                    Position {
-                        player, vec: Vec2 { x: position.vec.x + 10, y: position.vec.y + 10 }
-                    },
-                    directions_available
-                )
-            );
+        fn join_game(ref world: IWorldDispatcher, game_id: felt252) -> bool {
+            let playerAddress = get_caller_address();
+            let game = get!(world, game_id, (Games));
+            let mut newly_joined = false;
+            match game.state {
+                GameState::Inexistent => {
+                    panic_with_felt252('Game does not exist');
+                },
+                GameState::Created => {
+                    match (game.controller, game.opponent) {
+                        (Option::None, _) => {
+                            panic_with_felt252('Unexpected uncontrolled game');
+                        },
+                        (_, Option::Some(opponent)) => {
+                            panic_with_felt252('Unexpected Created game state');
+                        },
+                        (Option::Some(controller), _) => {
+                            if controller != playerAddress {
+                                set!(
+                                    world,
+                                    (
+                                        Games {
+                                            game_id,
+                                            state: GameState::Joined,
+                                            controller: game.controller,
+                                            opponent: Option::Some(playerAddress),
+                                            controller_has_black: game.controller_has_black,
+                                            board: game.board,
+                                            new_turn_player: game.new_turn_player,
+                                        }
+                                    )
+                                );
+                                newly_joined = true;    
+                            };
+                        }
+                    };
+                },
+                GameState::Joined => {
+                    match (game.controller, game.opponent) {
+                        (Option::Some(controller), Option::Some(opponent)) => {
+                            if controller != playerAddress && opponent != playerAddress {
+                                panic_with_felt252('Game can no longer be joined');
+                            } // else don't panic, all good, just already joined.
+                        },
+                        (_, _) => {
+                            panic_with_felt252('Unexpected Joined game state');
+                        }
+                    }
+                },
+                _ => {
+                    panic_with_felt252('Game can no longer be joined');
+                }
+            };
+            newly_joined
         }
 
         // Implementation of the move function for the ContractState struct.
-        fn move(ref world: IWorldDispatcher, direction: Direction) {
+        fn move(ref world: IWorldDispatcher, game_id: felt252, move: Move) {
             // Get the address of the current caller, possibly the player's address.
-            let player = get_caller_address();
+            let _player = get_caller_address();
 
             // Retrieve the player's current position and moves data from the world.
-            let (mut position, mut moves) = get!(world, player, (Position, Moves));
+            // let (mut position, mut moves) = get!(world, player, (Position, Moves));
 
             // Deduct one from the player's remaining moves.
-            moves.remaining -= 1;
+            // moves.remaining -= 1;
 
             // Update the last direction the player moved in.
-            moves.last_direction = direction;
+            // moves.last_direction = direction;
 
             // Calculate the player's next position based on the provided direction.
-            let next = next_position(position, direction);
 
             // Update the world state with the new moves data and position.
-            set!(world, (moves, next));
+            // set!(world, (moves, next));
         // Emit an event to the world to notify about the player's move.
         // emit!(world, (moves));
         }
     }
-}
-
-// Define function like this:
-fn next_position(mut position: Position, direction: Direction) -> Position {
-    match direction {
-        Direction::None => { return position; },
-        Direction::Left => { position.vec.x -= 1; },
-        Direction::Right => { position.vec.x += 1; },
-        Direction::Up => { position.vec.y -= 1; },
-        Direction::Down => { position.vec.y += 1; },
-    };
-    position
 }

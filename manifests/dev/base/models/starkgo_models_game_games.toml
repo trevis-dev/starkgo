@@ -1,0 +1,40 @@
+kind = "DojoModel"
+class_hash = "0x70aae269d11a3f7f9b44d3a0beb184206a111a67b8b3474ca95755ff41a471f"
+original_class_hash = "0x70aae269d11a3f7f9b44d3a0beb184206a111a67b8b3474ca95755ff41a471f"
+abi = "manifests/dev/abis/base/models/starkgo_models_game_games.json"
+name = "starkgo::models::game::games"
+
+[[members]]
+name = "game_id"
+type = "felt252"
+key = true
+
+[[members]]
+name = "state"
+type = "GameState"
+key = false
+
+[[members]]
+name = "controller"
+type = "Option<ContractAddress>"
+key = false
+
+[[members]]
+name = "opponent"
+type = "Option<ContractAddress>"
+key = false
+
+[[members]]
+name = "controller_has_black"
+type = "bool"
+key = false
+
+[[members]]
+name = "board"
+type = "Board"
+key = false
+
+[[members]]
+name = "new_turn_player"
+type = "Player"
+key = false

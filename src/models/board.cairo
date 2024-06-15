@@ -4,6 +4,8 @@ use core::fmt::{Display, Formatter, Error};
 const GRID_SIZE: usize = 9;
 const BIT_MASK: u256 = 0b11; // Mask for extracting 2 bits to store None vs Black vs White stone on each of 81 intersections;
 
+type Board = u256;
+
 fn pow2(exp: usize) -> u256 {
     let mut idx: usize = 0;
     let mut res: u256 = 1;
@@ -70,14 +72,14 @@ fn move(ref grid: u256, player: Player, position: Position) {
 }
 
 
-#[derive(Serde, Copy, Drop, Introspect)]
+#[derive(Serde, Copy, Drop, Introspect, PartialEq)]
 struct Position {
     x: Row,
     y: Column,
 }
 
 
-#[derive(Serde, Copy, Drop, Introspect)]
+#[derive(Serde, Copy, Drop, Introspect, PartialEq)]
 enum Row {
     None,
     A,
@@ -125,7 +127,7 @@ impl RowIntoByteArray of Into<Row, ByteArray> {
     }
 }
 
-#[derive(Serde, Copy, Drop, Introspect)]
+#[derive(Serde, Copy, Drop, Introspect, PartialEq)]
 enum Column {
     None,
     One,
@@ -172,7 +174,7 @@ impl ColmumnIntoByteArray of Into<Column, ByteArray> {
     }
 }
 
-#[derive(Serde, Copy, Drop, Introspect)]
+#[derive(Serde, Copy, Drop, Introspect, PartialEq)]
 enum Player {
     None,
     Black,

@@ -60,27 +60,171 @@
   },
   {
     "type": "enum",
-    "name": "starkgo::models::moves::Direction",
+    "name": "core::bool",
+    "variants": [
+      {
+        "name": "False",
+        "type": "()"
+      },
+      {
+        "name": "True",
+        "type": "()"
+      }
+    ]
+  },
+  {
+    "type": "enum",
+    "name": "starkgo::models::board::Row",
     "variants": [
       {
         "name": "None",
         "type": "()"
       },
       {
-        "name": "Left",
+        "name": "A",
         "type": "()"
       },
       {
-        "name": "Right",
+        "name": "B",
         "type": "()"
       },
       {
-        "name": "Up",
+        "name": "C",
         "type": "()"
       },
       {
-        "name": "Down",
+        "name": "D",
         "type": "()"
+      },
+      {
+        "name": "E",
+        "type": "()"
+      },
+      {
+        "name": "F",
+        "type": "()"
+      },
+      {
+        "name": "G",
+        "type": "()"
+      },
+      {
+        "name": "H",
+        "type": "()"
+      },
+      {
+        "name": "I",
+        "type": "()"
+      }
+    ]
+  },
+  {
+    "type": "enum",
+    "name": "starkgo::models::board::Column",
+    "variants": [
+      {
+        "name": "None",
+        "type": "()"
+      },
+      {
+        "name": "One",
+        "type": "()"
+      },
+      {
+        "name": "Two",
+        "type": "()"
+      },
+      {
+        "name": "Three",
+        "type": "()"
+      },
+      {
+        "name": "Four",
+        "type": "()"
+      },
+      {
+        "name": "Five",
+        "type": "()"
+      },
+      {
+        "name": "Six",
+        "type": "()"
+      },
+      {
+        "name": "Seven",
+        "type": "()"
+      },
+      {
+        "name": "Eight",
+        "type": "()"
+      },
+      {
+        "name": "Nine",
+        "type": "()"
+      }
+    ]
+  },
+  {
+    "type": "struct",
+    "name": "starkgo::models::board::Position",
+    "members": [
+      {
+        "name": "x",
+        "type": "starkgo::models::board::Row"
+      },
+      {
+        "name": "y",
+        "type": "starkgo::models::board::Column"
+      }
+    ]
+  },
+  {
+    "type": "enum",
+    "name": "core::option::Option::<starkgo::models::board::Position>",
+    "variants": [
+      {
+        "name": "Some",
+        "type": "starkgo::models::board::Position"
+      },
+      {
+        "name": "None",
+        "type": "()"
+      }
+    ]
+  },
+  {
+    "type": "struct",
+    "name": "starkgo::systems::move::PlayerMove",
+    "members": [
+      {
+        "name": "move_position",
+        "type": "core::option::Option::<starkgo::models::board::Position>"
+      },
+      {
+        "name": "is_pass",
+        "type": "core::bool"
+      },
+      {
+        "name": "is_resign",
+        "type": "core::bool"
+      }
+    ]
+  },
+  {
+    "type": "enum",
+    "name": "starkgo::systems::move::Move",
+    "variants": [
+      {
+        "name": "Play",
+        "type": "starkgo::systems::move::PlayerMove"
+      },
+      {
+        "name": "Pass",
+        "type": "starkgo::systems::move::PlayerMove"
+      },
+      {
+        "name": "Resign",
+        "type": "starkgo::systems::move::PlayerMove"
       }
     ]
   },
@@ -90,9 +234,34 @@
     "items": [
       {
         "type": "function",
-        "name": "spawn",
-        "inputs": [],
-        "outputs": [],
+        "name": "create_game",
+        "inputs": [
+          {
+            "name": "game_id",
+            "type": "core::felt252"
+          }
+        ],
+        "outputs": [
+          {
+            "type": "core::felt252"
+          }
+        ],
+        "state_mutability": "external"
+      },
+      {
+        "type": "function",
+        "name": "join_game",
+        "inputs": [
+          {
+            "name": "game_id",
+            "type": "core::felt252"
+          }
+        ],
+        "outputs": [
+          {
+            "type": "core::bool"
+          }
+        ],
         "state_mutability": "external"
       },
       {
@@ -100,8 +269,12 @@
         "name": "move",
         "inputs": [
           {
-            "name": "direction",
-            "type": "starkgo::models::moves::Direction"
+            "name": "game_id",
+            "type": "core::felt252"
+          },
+          {
+            "name": "move",
+            "type": "starkgo::systems::move::Move"
           }
         ],
         "outputs": [],
