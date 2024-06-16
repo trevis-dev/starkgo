@@ -93,7 +93,7 @@ enum Row {
 }
 
 
-impl RowIntoFelt252 of Into<Row, usize> {
+impl RowIntoUsize of Into<Row, usize> {
     fn into(self: Row) -> usize {
         match self {
             Row::None => 1000,
@@ -140,7 +140,7 @@ enum Column {
     Nine
 }
 
-impl ColmumnIntoFelt252 of Into<Column, usize> {
+impl ColmumnIntoUsize of Into<Column, usize> {
     fn into(self: Column) -> usize {
         match self {
             Column::None => 1000,
@@ -180,7 +180,7 @@ enum Player {
     White,
 }
 
-impl PlayerIntoFelt252 of Into<Player, u8> {
+impl PlayerIntoU8 of Into<Player, u8> {
     fn into(self: Player) -> u8 {
         match self {
             Player::None => 0,
