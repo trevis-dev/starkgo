@@ -16,7 +16,10 @@ csb = "./scripts/csb.sh"
 osb = "./scripts/osb.sh"
 csb_2 = "./scripts/csb_2.sh"
 osb_2 = "./scripts/osb_2.sh"
+prep = "./scripts/prep.sh"
 move = "./scripts/move.sh"
+move_o = "./scripts/move_o.sh"
+moves = "./scripts/moves.sh"
 
 [dependencies]
 dojo = { git = "https://github.com/dojoengine/dojo", tag = "v0.7.0" }

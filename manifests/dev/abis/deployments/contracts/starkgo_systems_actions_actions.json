@@ -179,26 +179,12 @@
     ]
   },
   {
-    "type": "enum",
-    "name": "core::option::Option::<starkgo::models::board::Position>",
-    "variants": [
-      {
-        "name": "Some",
-        "type": "starkgo::models::board::Position"
-      },
-      {
-        "name": "None",
-        "type": "()"
-      }
-    ]
-  },
-  {
     "type": "struct",
     "name": "starkgo::models::move::PlayerMove",
     "members": [
       {
         "name": "move_position",
-        "type": "core::option::Option::<starkgo::models::board::Position>"
+        "type": "starkgo::models::board::Position"
       },
       {
         "name": "is_pass",

@@ -7,4 +7,4 @@ export RPC_URL="http://localhost:5050";
 export WORLD_ADDRESS=$(cat ./manifests/dev/manifest.json | jq -r '.world.address')
 
 # sozo execute --world <WORLD_ADDRESS> <CONTRACT> <ENTRYPOINT>
-sozo execute --world $WORLD_ADDRESS starkgo::systems::actions::actions move -c 1,0,1,1,0,0 --wait
+sozo execute --profile two --world $WORLD_ADDRESS starkgo::systems::actions::actions move -c 1,0,1,4,0,0 --wait

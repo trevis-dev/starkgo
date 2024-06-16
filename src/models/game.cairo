@@ -40,26 +40,23 @@ struct Games {
     opponent: Option<ContractAddress>,
     controller_has_black: StartVote,
     board: Board,
+    nb_moves: u32,
     capture: Capture,
     new_turn_player: Player,
     result: GameResult,
 }
 
 fn applyMove(game: @Games, player: Player, move: Move) -> Games {
-    let mut new_game = Games {
-        game_id: *game.game_id,
-        state: *game.state,
-        controller: *game.controller,
-        opponent: *game.opponent,
-        controller_has_black: *game.controller_has_black,
-        board: *game.board,
-        capture: *game.capture,
-        new_turn_player: *game.new_turn_player,
-        result: *game.result,
-    };
+    let mut new_game = game.clone();
     match move {
         Move::Play(player_move) => {
-            add_move(ref new_game.board, player, player_move.move_position.unwrap());
+            add_move(ref new_game.board, player, player_move.move_position);
+            if player == Player::Black {
+                new_game.new_turn_player = Player::White;
+            } else {
+                new_game.new_turn_player = Player::Black;
+            };
+            new_game.nb_moves += 1;
         },
         _ => { 
             // todo

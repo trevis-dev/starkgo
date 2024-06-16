@@ -33,6 +33,7 @@ mod actions {
                                 opponent: Option::None,
                                 controller_has_black: StartVote { controller: Option::None, opponent: Option::None },
                                 board: 0,
+                                nb_moves: 0,
                                 capture: Capture { black: 0, white: 0 },
                                 new_turn_player: Player::None,
                                 result: GameResult { winner: Player::None, is_resign: false, double_score_diff: 0},
@@ -74,6 +75,7 @@ mod actions {
                                             opponent: Option::Some(player_address),
                                             controller_has_black: StartVote { controller: Option::None, opponent: Option::None },
                                             board: game.board,
+                                            nb_moves: game.nb_moves,
                                             capture: game.capture,
                                             new_turn_player: game.new_turn_player,
                                             result: game.result,
@@ -124,6 +126,7 @@ mod actions {
                             opponent: game.opponent,
                             controller_has_black: StartVote { controller: player_vote, opponent: opponent_vote },
                             board: game.board,
+                            nb_moves: game.nb_moves,
                             capture: game.capture,
                             new_turn_player: Player::Black,
                             result: game.result,
@@ -139,6 +142,7 @@ mod actions {
                             opponent: game.opponent,
                             controller_has_black: StartVote { controller: player_vote, opponent: opponent_vote },
                             board: game.board,
+                            nb_moves: game.nb_moves,
                             capture: game.capture,
                             new_turn_player: game.new_turn_player,
                             result: game.result,
@@ -157,6 +161,7 @@ mod actions {
                             opponent: game.opponent,
                             controller_has_black: StartVote { controller: controller_vote, opponent: player_vote },
                             board: game.board,
+                            nb_moves: game.nb_moves,
                             capture: game.capture,
                             new_turn_player: Player::Black,
                             result: game.result,
@@ -172,6 +177,7 @@ mod actions {
                             opponent: game.opponent,
                             controller_has_black: StartVote { controller: controller_vote, opponent: player_vote },
                             board: game.board,
+                            nb_moves: game.nb_moves,
                             capture: game.capture,
                             new_turn_player: game.new_turn_player,
                             result: game.result,
@@ -205,13 +211,15 @@ mod actions {
             if *game.controller == Option::Some(player_address) {
                 if controller_has_black {
                     player =  Player::Black;
+                } else {
+                    player =  Player::White;
                 };
-                player =  Player::White;
             } else {
                 if controller_has_black {
                     player =  Player::White;
+                } else {
+                    player = Player::Black;
                 };
-                player = Player::Black;
             }
         } else {
             panic!("Not a player in this game.");
