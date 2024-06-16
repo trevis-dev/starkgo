@@ -419,6 +419,20 @@
     ]
   },
   {
+    "type": "struct",
+    "name": "starkgo::models::game::Capture",
+    "members": [
+      {
+        "name": "black",
+        "type": "core::integer::u8"
+      },
+      {
+        "name": "white",
+        "type": "core::integer::u8"
+      }
+    ]
+  },
+  {
     "type": "enum",
     "name": "starkgo::models::board::Player",
     "variants": [
@@ -433,6 +447,24 @@
       {
         "name": "White",
         "type": "()"
+      }
+    ]
+  },
+  {
+    "type": "struct",
+    "name": "starkgo::models::game::GameResult",
+    "members": [
+      {
+        "name": "winner",
+        "type": "starkgo::models::board::Player"
+      },
+      {
+        "name": "is_resign",
+        "type": "core::bool"
+      },
+      {
+        "name": "double_score_diff",
+        "type": "core::integer::u32"
       }
     ]
   },
@@ -465,8 +497,16 @@
         "type": "core::integer::u256"
       },
       {
+        "name": "capture",
+        "type": "starkgo::models::game::Capture"
+      },
+      {
         "name": "new_turn_player",
         "type": "starkgo::models::board::Player"
+      },
+      {
+        "name": "result",
+        "type": "starkgo::models::game::GameResult"
       }
     ]
   },

@@ -1,6 +1,6 @@
 kind = "DojoModel"
-class_hash = "0xae4041679e780d457e1c68f020ecf704940bd6d240bd017e37cf05d6e8ea95"
-original_class_hash = "0xae4041679e780d457e1c68f020ecf704940bd6d240bd017e37cf05d6e8ea95"
+class_hash = "0xe52b5529036f5fbd4985f5e772420e057d624be5cc7a2088aa01167e5da1e3"
+original_class_hash = "0xe52b5529036f5fbd4985f5e772420e057d624be5cc7a2088aa01167e5da1e3"
 abi = "manifests/dev/abis/base/models/starkgo_models_game_games.json"
 name = "starkgo::models::game::games"
 
@@ -35,6 +35,16 @@ type = "Board"
 key = false
 
 [[members]]
+name = "capture"
+type = "Capture"
+key = false
+
+[[members]]
 name = "new_turn_player"
 type = "Player"
+key = false
+
+[[members]]
+name = "result"
+type = "GameResult"
 key = false

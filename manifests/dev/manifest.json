@@ -1020,8 +1020,8 @@
     {
       "kind": "DojoContract",
       "address": "0x167359df980dc4435a6baf982375ac517e6f138b5a10d93f2a1acf3c17f5b88",
-      "class_hash": "0x16c5573e06de065b7a87ded4463b4f39bdcbd8ca2cff290ce2aec932ea94246",
-      "original_class_hash": "0x16c5573e06de065b7a87ded4463b4f39bdcbd8ca2cff290ce2aec932ea94246",
+      "class_hash": "0x4789ce3b48e2488df6c7b783a5091aa71483a6d2c067d9696059a8fd0f054e7",
+      "original_class_hash": "0x4789ce3b48e2488df6c7b783a5091aa71483a6d2c067d9696059a8fd0f054e7",
       "base_class_hash": "0x22f3e55b61d86c2ac5239fa3b3b8761f26b9a5c0b5f61ddbd5d756ced498b46",
       "abi": [
         {
@@ -1441,13 +1441,23 @@
           "key": false
         },
         {
+          "name": "capture",
+          "type": "Capture",
+          "key": false
+        },
+        {
           "name": "new_turn_player",
           "type": "Player",
           "key": false
+        },
+        {
+          "name": "result",
+          "type": "GameResult",
+          "key": false
         }
       ],
-      "class_hash": "0xae4041679e780d457e1c68f020ecf704940bd6d240bd017e37cf05d6e8ea95",
-      "original_class_hash": "0xae4041679e780d457e1c68f020ecf704940bd6d240bd017e37cf05d6e8ea95",
+      "class_hash": "0xe52b5529036f5fbd4985f5e772420e057d624be5cc7a2088aa01167e5da1e3",
+      "original_class_hash": "0xe52b5529036f5fbd4985f5e772420e057d624be5cc7a2088aa01167e5da1e3",
       "abi": [
         {
           "type": "impl",
@@ -1869,6 +1879,20 @@
           ]
         },
         {
+          "type": "struct",
+          "name": "starkgo::models::game::Capture",
+          "members": [
+            {
+              "name": "black",
+              "type": "core::integer::u8"
+            },
+            {
+              "name": "white",
+              "type": "core::integer::u8"
+            }
+          ]
+        },
+        {
           "type": "enum",
           "name": "starkgo::models::board::Player",
           "variants": [
@@ -1883,6 +1907,24 @@
             {
               "name": "White",
               "type": "()"
+            }
+          ]
+        },
+        {
+          "type": "struct",
+          "name": "starkgo::models::game::GameResult",
+          "members": [
+            {
+              "name": "winner",
+              "type": "starkgo::models::board::Player"
+            },
+            {
+              "name": "is_resign",
+              "type": "core::bool"
+            },
+            {
+              "name": "double_score_diff",
+              "type": "core::integer::u32"
             }
           ]
         },
@@ -1915,8 +1957,16 @@
               "type": "core::integer::u256"
             },
             {
+              "name": "capture",
+              "type": "starkgo::models::game::Capture"
+            },
+            {
               "name": "new_turn_player",
               "type": "starkgo::models::board::Player"
+            },
+            {
+              "name": "result",
+              "type": "starkgo::models::game::GameResult"
             }
           ]
         },
