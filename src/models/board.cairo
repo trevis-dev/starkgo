@@ -16,19 +16,19 @@ fn pow2(exp: usize) -> u256 {
     res
 }
 
-fn _set_value(ref grid: u256, x: usize, y: usize, value: u8) {
+fn _set_value(ref board: Board, x: usize, y: usize, value: u8) {
+    // no need to clear bit as position must be empty
     let position: usize = (y * GRID_SIZE + x) * 2;
-    let bit_clear_mask = ~(BIT_MASK * pow2(position));
     let positioned_new_value: u256 = (value.into()) * pow2(position);
 
-    grid = (grid & bit_clear_mask ) | positioned_new_value;
+    board = board | positioned_new_value;
 }
 
-fn _get_value(grid: @u256, x: usize, y: usize) -> u8 {
+fn _get_value(board: @Board, x: usize, y: usize) -> u8 {
     let bit_position = (y * GRID_SIZE + x) * 2;
     let bit_mask = BIT_MASK * pow2(bit_position);
 
-    ((*grid & bit_mask) / pow2(bit_position)).try_into().unwrap()
+    ((*board & bit_mask) / pow2(bit_position)).try_into().unwrap()
 }
 
 fn getLabel(value: u8) -> ByteArray  {
@@ -40,7 +40,7 @@ fn getLabel(value: u8) -> ByteArray  {
     }
 }
 
-fn print_board(board: @u256) {
+fn print_board(board: @Board) {
     println!("    1   2   3   4   5   6   7   8   9");
     let row_labels: Array<ByteArray> = array!["A", "B", "C", "D", "E", "F", "G", "H", "I"];
     let mut x_idx: usize = 0;
@@ -61,20 +61,27 @@ fn print_board(board: @u256) {
     };
 }
 
-fn add_move(ref grid: u256, player: Player, position: Position) {
+#[inline(always)]
+fn check_move_allowed(board: @Board, player: Player, position: Position) -> (usize, usize, u8) {
     let x: usize = position.x.into();
     let y: usize = position.y.into();
     assert!(x < GRID_SIZE && y < GRID_SIZE, "Coordinates out of bounds");
+    assert!(_get_value(board, x, y) == 0, "Occupied");
     let value: u8 = player.into();
     assert!(value <= 2, "Value must be 0, 1, or 2");
-    _set_value(ref grid, x, y, value);
+    (x, y, value)
 }
 
-fn get_move(grid: @Board, position: Position) -> u8 {
+fn add_move(ref board: Board, player: Player, position: Position) {
+    let (x, y, value) = check_move_allowed(@board, player, position);
+    _set_value(ref board, x, y, value);
+}
+
+fn get_move(board: @Board, position: Position) -> u8 {
     let x: usize = position.x.into();
     let y: usize = position.y.into();
     assert!(x < GRID_SIZE && y < GRID_SIZE, "Coordinates out of bounds");
-    _get_value(grid, x, y)
+    _get_value(board, x, y)
 }
 
 #[derive(Serde, Copy, Drop, Introspect, PartialEq)]
@@ -229,15 +236,40 @@ mod tests {
     use super::{Board, Position, Player, Row, Column, add_move, get_move, print_board};
 
     #[test]
-    #[available_gas(14500000)]
+    #[available_gas(5010000)]
+    fn test_first_move_gaz() {
+        let mut board: Board = 0;
+        add_move(ref board, Player::Black, Position { x: Row::D, y: Column::Six });
+    }
+
+    #[test]
+    #[available_gas(11200000)]
+    fn test_get_move_gaz() {
+        let mut board: Board = 0;
+        add_move(ref board, Player::Black, Position { x: Row::D, y: Column::Six });
+        assert(get_move(@board, Position { x: Row::D, y: Column:: Six}) == Player::Black.into(), 'Wrong player');
+        assert(get_move(@board, Position { x: Row::E, y: Column:: Five}) == Player::None.into(), 'Wrong player');
+    }
+
+    #[test]
+    #[available_gas(20300000)]
     fn test_valid_range() {
-        let mut grid: Board = 0;
-        add_move(ref grid, Player::Black, Position {x: Row::D, y: Column::Six });
-        assert(grid == 79228162514264337593543950336, 'Incorrect state after 1st move.');
-        add_move(ref grid, Player::White, Position {x: Row::E, y: Column::Five});
-        assert(grid == 79230580365903566851893362688, 'Incorrect state after 2nd move.');
-        add_move(ref grid, Player::Black, Position {x: Row::I, y: Column::Nine});
-        assert(grid == 1461501637330902918282915413082186586507825905664, 'Incorrect state after 3rd move.');
-        assert(get_move(@grid, Position { x: Row::E, y: Column:: Five}) == Player::White.into(), 'Wrong player');
+        let mut board: Board = 0;
+        add_move(ref board, Player::Black, Position { x: Row::D, y: Column::Six });
+        assert(board == 79228162514264337593543950336, 'Incorrect state after 1st move.');
+        add_move(ref board, Player::White, Position  {x: Row::E, y: Column::Five });
+        assert(board == 79230580365903566851893362688, 'Incorrect state after 2nd move.');
+        add_move(ref board, Player::Black, Position { x: Row::I, y: Column::Nine });
+        assert(board == 1461501637330902918282915413082186586507825905664, 'Incorrect state after 3rd move.');
+        assert(get_move(@board, Position { x: Row::E, y: Column:: Five }) == Player::White.into(), 'Wrong player');
+    }
+
+    #[test]
+    #[available_gas(8400000)]
+    #[should_panic(expected: ("Occupied", ))]
+    fn test_position_occupied() {
+        let mut board: Board = 0;
+        add_move(ref board, Player::Black, Position { x: Row::D, y: Column::Six });
+        add_move(ref board, Player::Black, Position { x: Row::D, y: Column::Six });
     }
 }
