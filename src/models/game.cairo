@@ -17,6 +17,12 @@ struct StartVote {
     opponent: Option<bool>,
 }
 
+#[derive(Serde, Copy, Drop, Introspect, PartialEq)]
+struct Capture {
+    black: u8,
+    white: u8,
+}
+
 #[derive(Copy, Drop, Serde)]
 #[dojo::model]
 struct Games {
@@ -27,6 +33,7 @@ struct Games {
     opponent: Option<ContractAddress>,
     controller_has_black: StartVote,
     board: Board,
+    capture: Capture,
     new_turn_player: Player
 }
 
@@ -38,6 +45,7 @@ fn applyMove(game: @Games, player: Player, move: Move) -> Games {
         opponent: *game.opponent,
         controller_has_black: *game.controller_has_black,
         board: *game.board,
+        capture: *game.capture,
         new_turn_player: *game.new_turn_player
     };
     match move {

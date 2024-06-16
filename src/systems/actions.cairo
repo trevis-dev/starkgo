@@ -1,4 +1,4 @@
-use starkgo::models::game::{Games, GameState, StartVote, applyMove};
+use starkgo::models::game::{Games, GameState, StartVote, Capture, applyMove};
 use starkgo::models::board::{Board, Player, Position};
 use starkgo::models::move::{Move};
 use starknet::ContractAddress;
@@ -13,7 +13,7 @@ trait IActions {
 
 #[dojo::contract]
 mod actions {
-    use super::{IActions, GameState, Games, Move, Player, Position, StartVote, applyMove};
+    use super::{IActions, GameState, Capture, Games, Move, Player, Position, StartVote, applyMove};
     use starknet::{ContractAddress, get_caller_address};
 
     #[abi(embed_v0)]
@@ -33,6 +33,7 @@ mod actions {
                                 opponent: Option::None,
                                 controller_has_black: StartVote { controller: Option::None, opponent: Option::None },
                                 board: 0,
+                                capture: Capture { black: 0, white: 0 },
                                 new_turn_player: Player::None,
                             }
                         )
@@ -72,6 +73,7 @@ mod actions {
                                             opponent: Option::Some(player_address),
                                             controller_has_black: StartVote { controller: Option::None, opponent: Option::None },
                                             board: game.board,
+                                            capture: game.capture,
                                             new_turn_player: game.new_turn_player,
                                         }
                                     )
@@ -120,6 +122,7 @@ mod actions {
                             opponent: Option::Some(player_address),
                             controller_has_black: StartVote { controller: player_vote, opponent: opponent_vote },
                             board: game.board,
+                            capture: game.capture,
                             new_turn_player: Player::Black,
                         }
                     );    
@@ -133,6 +136,7 @@ mod actions {
                             opponent: Option::Some(player_address),
                             controller_has_black: StartVote { controller: player_vote, opponent: opponent_vote },
                             board: game.board,
+                            capture: game.capture,
                             new_turn_player: game.new_turn_player,
                         }
                     );
@@ -149,6 +153,7 @@ mod actions {
                             opponent: Option::Some(player_address),
                             controller_has_black: StartVote { controller: controller_vote, opponent: player_vote },
                             board: game.board,
+                            capture: game.capture,
                             new_turn_player: Player::Black,
                         }
                     );    
@@ -162,6 +167,7 @@ mod actions {
                             opponent: Option::Some(player_address),
                             controller_has_black: StartVote { controller: controller_vote, opponent: player_vote },
                             board: game.board,
+                            capture: game.capture,
                             new_turn_player: game.new_turn_player,
                         }
                     );
