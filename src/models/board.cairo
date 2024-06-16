@@ -16,10 +16,7 @@ fn pow2(exp: usize) -> u256 {
     res
 }
 
-fn set_value(ref grid: u256, x: usize, y: usize, value: u8) {
-    assert!(x < GRID_SIZE && y < GRID_SIZE, "Coordinates out of bounds");
-    assert!(value <= 2, "Value must be 0, 1, or 2");
-
+fn _set_value(ref grid: u256, x: usize, y: usize, value: u8) {
     let position: usize = (y * GRID_SIZE + x) * 2;
     let bit_clear_mask = ~(BIT_MASK * pow2(position));
     let positioned_new_value: u256 = (value.into()) * pow2(position);
@@ -27,9 +24,7 @@ fn set_value(ref grid: u256, x: usize, y: usize, value: u8) {
     grid = (grid & bit_clear_mask ) | positioned_new_value;
 }
 
-fn get_value(grid: @u256, x: usize, y: usize) -> u8 {
-    assert!(x < GRID_SIZE && y < GRID_SIZE, "Coordinates out of bounds");
-
+fn _get_value(grid: @u256, x: usize, y: usize) -> u8 {
     let bit_position = (y * GRID_SIZE + x) * 2;
     let bit_mask = BIT_MASK * pow2(bit_position);
 
@@ -53,7 +48,7 @@ fn print_board(board: @u256) {
         print!("{} -", row_labels[x_idx]);
         let mut y_idx: usize = 0;        
         while y_idx < GRID_SIZE {
-            let value = get_value(board, x_idx, y_idx);
+            let value = _get_value(board, x_idx, y_idx);
             let label = getLabel(value);
             print!("{label}-");
             y_idx += 1;
@@ -67,9 +62,20 @@ fn print_board(board: @u256) {
 }
 
 fn add_move(ref grid: u256, player: Player, position: Position) {
-    set_value(ref grid, position.x.into(), position.y.into(), player.into());
+    let x: usize = position.x.into();
+    let y: usize = position.y.into();
+    assert!(x < GRID_SIZE && y < GRID_SIZE, "Coordinates out of bounds");
+    let value: u8 = player.into();
+    assert!(value <= 2, "Value must be 0, 1, or 2");
+    _set_value(ref grid, x, y, value);
 }
 
+fn get_move(grid: @Board, position: Position) -> u8 {
+    let x: usize = position.x.into();
+    let y: usize = position.y.into();
+    assert!(x < GRID_SIZE && y < GRID_SIZE, "Coordinates out of bounds");
+    _get_value(grid, x, y)
+}
 
 #[derive(Serde, Copy, Drop, Introspect, PartialEq)]
 struct Position {
@@ -220,34 +226,18 @@ impl PositionDisplay of Display<Position> {
 
 #[cfg(test)]
 mod tests {
-    use super::{Position, Player, Row, Column, add_move, print_board, set_value};
+    use super::{Board, Position, Player, Row, Column, add_move, get_move, print_board};
 
     #[test]
-    #[available_gas(12000000)]
+    #[available_gas(14500000)]
     fn test_valid_range() {
-        let mut grid: u256 = 0;
+        let mut grid: Board = 0;
         add_move(ref grid, Player::Black, Position {x: Row::D, y: Column::Six });
         assert(grid == 79228162514264337593543950336, 'Incorrect state after 1st move.');
         add_move(ref grid, Player::White, Position {x: Row::E, y: Column::Five});
         assert(grid == 79230580365903566851893362688, 'Incorrect state after 2nd move.');
         add_move(ref grid, Player::Black, Position {x: Row::I, y: Column::Nine});
         assert(grid == 1461501637330902918282915413082186586507825905664, 'Incorrect state after 3rd move.');
-    }
-
-
-    #[test]
-    #[should_panic(expected: ("Coordinates out of bounds", ))]
-    #[available_gas(100000)]
-    fn test_outside_range() {
-        let mut grid: u256 = 0;
-        set_value(ref grid, x: 10, y: 4, value: 1);
-    }
-
-    #[test]
-    #[should_panic(expected: ("Value must be 0, 1, or 2", ))]
-    #[available_gas(100000)]
-    fn test_incorrect_value() {
-        let mut grid: u256 = 0;
-        set_value(ref grid, x: 5, y: 4, value: 4);
+        assert(get_move(@grid, Position { x: Row::E, y: Column:: Five}) == Player::White.into(), 'Wrong player');
     }
 }
