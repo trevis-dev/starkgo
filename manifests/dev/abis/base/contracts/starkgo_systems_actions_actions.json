@@ -346,6 +346,51 @@
     ]
   },
   {
+    "type": "enum",
+    "name": "starkgo::models::board::Player",
+    "variants": [
+      {
+        "name": "None",
+        "type": "()"
+      },
+      {
+        "name": "Black",
+        "type": "()"
+      },
+      {
+        "name": "White",
+        "type": "()"
+      }
+    ]
+  },
+  {
+    "type": "event",
+    "name": "starkgo::systems::actions::actions::Moved",
+    "kind": "struct",
+    "members": [
+      {
+        "name": "game_id",
+        "type": "core::felt252",
+        "kind": "key"
+      },
+      {
+        "name": "move_nb",
+        "type": "core::integer::u32",
+        "kind": "data"
+      },
+      {
+        "name": "player",
+        "type": "starkgo::models::board::Player",
+        "kind": "data"
+      },
+      {
+        "name": "position",
+        "type": "starkgo::models::board::Position",
+        "kind": "data"
+      }
+    ]
+  },
+  {
     "type": "event",
     "name": "starkgo::systems::actions::actions::Event",
     "kind": "enum",
@@ -353,6 +398,11 @@
       {
         "name": "UpgradeableEvent",
         "type": "dojo::components::upgradeable::upgradeable::Event",
+        "kind": "nested"
+      },
+      {
+        "name": "Moved",
+        "type": "starkgo::systems::actions::actions::Moved",
         "kind": "nested"
       }
     ]

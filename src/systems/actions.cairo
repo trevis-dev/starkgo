@@ -16,6 +16,20 @@ mod actions {
     use starkgo::models::board::{ Board, Player, Position};
     use starknet::{ ContractAddress, get_caller_address };
 
+    #[event]
+    #[derive(Drop, starknet::Event)]
+    enum Event {
+        Moved: Moved,
+    }
+    #[derive(Drop, Serde, starknet::Event)]
+    struct Moved {
+        #[key]
+        game_id: felt252,
+        move_nb: u32,
+        player: Player,
+        position: Position
+    }    
+
     #[abi(embed_v0)]
     impl ActionsImpl of IActions<ContractState> {
         fn create_game(ref world: IWorldDispatcher, game_id: felt252) {
@@ -197,6 +211,19 @@ mod actions {
             let player: Player = get_player(@game, player_address);
             assert!(player == game.new_turn_player, "Not player's turn.");
             let new_game = applyMove(@game, player, move);
+            match move {
+                Move::Play(player_move) => {
+                    emit!(world, Moved {
+                        game_id: game_id,
+                        move_nb: new_game.nb_moves,
+                        player: player,
+                        position: player_move.move_position,
+                    });
+                },
+                _ => {
+                    //todo
+                }
+            };
             set!(world, (new_game));
         }
     }

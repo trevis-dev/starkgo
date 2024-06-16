@@ -63,4 +63,4 @@ fn applyMove(game: @Games, player: Player, move: Move) -> Games {
         }
     }
     new_game
-}    
+}

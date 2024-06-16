@@ -22,8 +22,8 @@ name = "dojo::base::base"
 [[contracts]]
 kind = "DojoContract"
 address = "0x167359df980dc4435a6baf982375ac517e6f138b5a10d93f2a1acf3c17f5b88"
-class_hash = "0x1ff1f8e8e1be30abcbf8b5238679a8b9eab1bec94779b2e08518627fa6ca195"
-original_class_hash = "0x1ff1f8e8e1be30abcbf8b5238679a8b9eab1bec94779b2e08518627fa6ca195"
+class_hash = "0x12260b77b86a86eae82f9fdd0fc7884d398b17ac45bc530ea1726a0f7a82b6c"
+original_class_hash = "0x12260b77b86a86eae82f9fdd0fc7884d398b17ac45bc530ea1726a0f7a82b6c"
 base_class_hash = "0x22f3e55b61d86c2ac5239fa3b3b8761f26b9a5c0b5f61ddbd5d756ced498b46"
 abi = "manifests/dev/abis/deployments/contracts/starkgo_systems_actions_actions.json"
 reads = []
