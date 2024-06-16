@@ -12,7 +12,7 @@ trait IActions {
 #[dojo::contract]
 mod actions {
     use super::{ IActions, Move };
-    use starkgo::models::game::{ Capture, Games, GameState, StartVote, applyMove};
+    use starkgo::models::game::{ Capture, Games, GameState, GameResult, StartVote, applyMove};
     use starkgo::models::board::{ Board, Player, Position};
     use starknet::{ ContractAddress, get_caller_address };
 
@@ -35,6 +35,7 @@ mod actions {
                                 board: 0,
                                 capture: Capture { black: 0, white: 0 },
                                 new_turn_player: Player::None,
+                                result: GameResult { winner: Player::None, is_resign: false, double_score_diff: 0},
                             }
                         )
                     );
@@ -75,6 +76,7 @@ mod actions {
                                             board: game.board,
                                             capture: game.capture,
                                             new_turn_player: game.new_turn_player,
+                                            result: game.result,
                                         }
                                     )
                                 );
@@ -124,6 +126,7 @@ mod actions {
                             board: game.board,
                             capture: game.capture,
                             new_turn_player: Player::Black,
+                            result: game.result,
                         }
                     );    
                 } else {
@@ -138,6 +141,7 @@ mod actions {
                             board: game.board,
                             capture: game.capture,
                             new_turn_player: game.new_turn_player,
+                            result: game.result,
                         }
                     );
                 };
@@ -155,6 +159,7 @@ mod actions {
                             board: game.board,
                             capture: game.capture,
                             new_turn_player: Player::Black,
+                            result: game.result,
                         }
                     );    
                 } else {
@@ -169,6 +174,7 @@ mod actions {
                             board: game.board,
                             capture: game.capture,
                             new_turn_player: game.new_turn_player,
+                            result: game.result,
                         }
                     );
                 };

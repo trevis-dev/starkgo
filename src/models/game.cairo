@@ -23,7 +23,14 @@ struct Capture {
     white: u8,
 }
 
-#[derive(Copy, Drop, Serde)]
+#[derive(Serde, Copy, Drop, Introspect, PartialEq)]
+struct GameResult {
+    winner: Player,
+    is_resign: bool,
+    double_score_diff: u32,
+}
+
+#[derive(Copy, Drop, Serde, Introspect, PartialEq)]
 #[dojo::model]
 struct Games {
     #[key]
@@ -34,7 +41,8 @@ struct Games {
     controller_has_black: StartVote,
     board: Board,
     capture: Capture,
-    new_turn_player: Player
+    new_turn_player: Player,
+    result: GameResult,
 }
 
 fn applyMove(game: @Games, player: Player, move: Move) -> Games {
@@ -46,7 +54,8 @@ fn applyMove(game: @Games, player: Player, move: Move) -> Games {
         controller_has_black: *game.controller_has_black,
         board: *game.board,
         capture: *game.capture,
-        new_turn_player: *game.new_turn_player
+        new_turn_player: *game.new_turn_player,
+        result: *game.result,
     };
     match move {
         Move::Play(player_move) => {
