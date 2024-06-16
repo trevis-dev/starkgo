@@ -1,7 +1,5 @@
-use starkgo::models::game::{Games, GameState, StartVote, Capture, applyMove};
-use starkgo::models::board::{Board, Player, Position};
+
 use starkgo::models::move::{Move};
-use starknet::ContractAddress;
 
 #[dojo::interface]
 trait IActions {
@@ -13,8 +11,10 @@ trait IActions {
 
 #[dojo::contract]
 mod actions {
-    use super::{IActions, GameState, Capture, Games, Move, Player, Position, StartVote, applyMove};
-    use starknet::{ContractAddress, get_caller_address};
+    use super::{ IActions, Move };
+    use starkgo::models::game::{ Capture, Games, GameState, StartVote, applyMove};
+    use starkgo::models::board::{ Board, Player, Position};
+    use starknet::{ ContractAddress, get_caller_address };
 
     #[abi(embed_v0)]
     impl ActionsImpl of IActions<ContractState> {
