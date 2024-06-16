@@ -9,6 +9,13 @@ sierra-replace-ids = true
 [scripts]
 migrate = "sozo build && sozo migrate apply"
 create_game = "./scripts/create_game.sh"
+create_game_2 = "./scripts/create_game_2.sh"
+join_game = "./scripts/join_game.sh"
+join_game_2 = "./scripts/join_game_2.sh"
+csb = "./scripts/csb.sh"
+osb = "./scripts/osb.sh"
+csb_2 = "./scripts/csb_2.sh"
+osb_2 = "./scripts/osb_2.sh"
 move = "./scripts/move.sh"
 
 [dependencies]
@@ -24,7 +31,14 @@ rpc_url = "http://localhost:5050/"
 # Default account for katana with seed = 0
 account_address = "0xb3ff441a68610b30fd5e2abbf3a1548eb6ba6f3559f2862bf2dc757e5828ca"
 private_key = "0x2bbf4f9fd0bbb2e60b0316c1fe0b76cf7a4d0198bd493ced9b8df2a3a24d68a"
-#world_address = "0x559e9e223d83b6a3121ba33b1339323a3bdf4c7c302078fb3e755fddc68a2fb"  # Uncomment and update this line with your world address.
+world_address = "0x7bf4dbc57ac4213d82f13516bae388f7980897fc16fbc64eb6d156a9d739030"
+
+[profile.two.tool.dojo.env]
+rpc_url = "http://localhost:5050/"
+# Second account for katana with seed = 0
+account_address = "0xe29882a1fcba1e7e10cad46212257fea5c752a4f9b1b1ec683c503a2cf5c8a"
+private_key = "0x14d6672dcb4b77ca36a887e9a11cd9d637d5012468175829e9c6e770c61642"
+world_address = "0x7bf4dbc57ac4213d82f13516bae388f7980897fc16fbc64eb6d156a9d739030"  # Same
 
 [tool.dojo.world]
 name = "Dojo starter"
