@@ -420,15 +420,15 @@
   },
   {
     "type": "struct",
-    "name": "starkgo::models::game::Capture",
+    "name": "starkgo::models::board::Capture",
     "members": [
       {
         "name": "black",
-        "type": "core::integer::u8"
+        "type": "core::integer::u32"
       },
       {
         "name": "white",
-        "type": "core::integer::u8"
+        "type": "core::integer::u32"
       }
     ]
   },
@@ -497,12 +497,16 @@
         "type": "core::integer::u256"
       },
       {
+        "name": "previous_board",
+        "type": "core::integer::u256"
+      },
+      {
         "name": "nb_moves",
         "type": "core::integer::u32"
       },
       {
         "name": "capture",
-        "type": "starkgo::models::game::Capture"
+        "type": "starkgo::models::board::Capture"
       },
       {
         "name": "new_turn_player",

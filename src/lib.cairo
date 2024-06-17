@@ -5,6 +5,7 @@ mod systems {
 mod models {
     mod board;
     mod game;
+    mod group;
     mod move;
 }
 

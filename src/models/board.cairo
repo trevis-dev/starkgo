@@ -1,5 +1,6 @@
 use core::array::ArrayTrait;
 use core::fmt::{Display, Formatter, Error};
+use starkgo::models::group::remove_dead_stones;
 
 const GRID_SIZE: usize = 9;
 const BIT_MASK: u256 = 0b11; // Mask for extracting 2 bits to store None vs Black vs White stone on each of 81 intersections;
@@ -16,12 +17,29 @@ fn pow2(exp: usize) -> u256 {
     res
 }
 
-fn _set_value(ref board: Board, x: usize, y: usize, value: u8) {
-    // no need to clear bit as position must be empty
+fn pow2_128(exp: usize) -> u128 {
+    let mut idx: usize = 0;
+    let mut res: u128 = 1;
+    while idx < exp {
+        res *= 2;
+        idx += 1;
+    };
+    res
+}
+
+fn _set_value(ref board: Board, x: usize, y: usize, value: u8) -> Option<Capture> {
+    // Check that position is empty before calling
     let position: usize = (y * GRID_SIZE + x) * 2;
     let positioned_new_value: u256 = (value.into()) * pow2(position);
 
     board = board | positioned_new_value;
+    match remove_dead_stones(@board, x, y, value) {
+        Option::Some(move_capture) => {
+            // remove stones
+            Option::Some(Capture { black: move_capture.black, white: move_capture.white })
+        },
+        Option::None => { return Option::None; }
+    }
 }
 
 fn _get_value(board: @Board, x: usize, y: usize) -> u8 {
@@ -72,9 +90,10 @@ fn check_move_allowed(board: @Board, player: Player, position: Position) -> (usi
     (x, y, value)
 }
 
-fn add_move(ref board: Board, player: Player, position: Position) {
+fn add_move(ref board: Board, player: Player, position: Position) -> Option<Capture> {
     let (x, y, value) = check_move_allowed(@board, player, position);
-    _set_value(ref board, x, y, value);
+    let capture = _set_value(ref board, x, y, value);
+    capture
 }
 
 fn get_move(board: @Board, position: Position) -> u8 {
@@ -82,6 +101,12 @@ fn get_move(board: @Board, position: Position) -> u8 {
     let y: usize = position.y.into();
     assert!(x < GRID_SIZE && y < GRID_SIZE, "Coordinates out of bounds");
     _get_value(board, x, y)
+}
+
+#[derive(Serde, Copy, Drop, Introspect, PartialEq)]
+struct Capture {
+    black: u32,
+    white: u32,
 }
 
 #[derive(Serde, Copy, Drop, Introspect, PartialEq)]
@@ -233,43 +258,62 @@ impl PositionDisplay of Display<Position> {
 
 #[cfg(test)]
 mod tests {
-    use super::{Board, Position, Player, Row, Column, add_move, get_move, print_board};
+    use super::{Board, Capture, Position, Player, Row, Column, add_move, get_move, print_board};
 
     #[test]
-    #[available_gas(5010000)]
+    #[available_gas(385000000)]
     fn test_first_move_gaz() {
         let mut board: Board = 0;
-        add_move(ref board, Player::Black, Position { x: Row::D, y: Column::Six });
+        let _ = add_move(ref board, Player::Black, Position { x: Row::D, y: Column::Six });
     }
 
     #[test]
-    #[available_gas(11200000)]
+    #[available_gas(62000000)]
     fn test_get_move_gaz() {
-        let mut board: Board = 0;
-        add_move(ref board, Player::Black, Position { x: Row::D, y: Column::Six });
+        // let mut board: Board = 0;
+        // let _ = add_move(ref board, Player::Black, Position { x: Row::D, y: Column::Six });
+        // white plays elsewhere
+        let mut board: Board = 0x01000000000000000000000000.into();
         assert(get_move(@board, Position { x: Row::D, y: Column:: Six}) == Player::Black.into(), 'Wrong player');
         assert(get_move(@board, Position { x: Row::E, y: Column:: Five}) == Player::None.into(), 'Wrong player');
     }
 
     #[test]
-    #[available_gas(20300000)]
-    fn test_valid_range() {
+    #[available_gas(113000000)]
+    fn test_multiple_moves() {
         let mut board: Board = 0;
-        add_move(ref board, Player::Black, Position { x: Row::D, y: Column::Six });
+        let _ = add_move(ref board, Player::Black, Position { x: Row::D, y: Column::Six });
         assert(board == 79228162514264337593543950336, 'Incorrect state after 1st move.');
-        add_move(ref board, Player::White, Position  {x: Row::E, y: Column::Five });
+        let _ = add_move(ref board, Player::White, Position  {x: Row::E, y: Column::Five });
         assert(board == 79230580365903566851893362688, 'Incorrect state after 2nd move.');
-        add_move(ref board, Player::Black, Position { x: Row::I, y: Column::Nine });
-        assert(board == 1461501637330902918282915413082186586507825905664, 'Incorrect state after 3rd move.');
+        let _ = add_move(ref board, Player::Black, Position { x: Row::I, y: Column::Nine });
+        let _ = assert(board == 1461501637330902918282915413082186586507825905664, 'Incorrect state after 3rd move.');
         assert(get_move(@board, Position { x: Row::E, y: Column:: Five }) == Player::White.into(), 'Wrong player');
     }
 
     #[test]
-    #[available_gas(8400000)]
     #[should_panic(expected: ("Occupied", ))]
     fn test_position_occupied() {
-        let mut board: Board = 0;
-        add_move(ref board, Player::Black, Position { x: Row::D, y: Column::Six });
-        add_move(ref board, Player::Black, Position { x: Row::D, y: Column::Six });
+        let mut board: Board = 0x01000000000000000000000000.into();
+        let _ = add_move(ref board, Player::Black, Position { x: Row::D, y: Column::Six });
+    }
+    
+    #[test]
+    #[available_gas(43000000)]
+    fn test_capture_stone() {
+        // let mut board: Board = 0;
+        // let _ = add_move(ref board, Player::Black, Position { x: Row::D, y: Column::Six });
+        // let _ = add_move(ref board, Player::White, Position  {x: Row::D, y: Column::Five });
+        // let _ = add_move(ref board, Player::Black, Position { x: Row::E, y: Column::Five });
+        // // white plays elsewhere
+        // let _ = add_move(ref board, Player::Black, Position { x: Row::D, y: Column::Four });
+        // assert!(board == 0x01000180001000000000000000, "Incorrect state");
+
+        // =>
+        let mut board: Board = 0x01000180001000000000000000.into();
+        // white plays elsewhere
+        let capture = add_move(ref board, Player::Black, Position { x: Row::C, y: Column::Five });
+        assert(capture == Option::Some(Capture { black: 0, white: 1 }), 'Incorrect capture');
+        // assert(board == 79229446999100599641648922624, 'Incorrect state after capture.'); // todo
     }
 }

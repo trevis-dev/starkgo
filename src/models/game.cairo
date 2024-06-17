@@ -1,5 +1,5 @@
 use starknet::ContractAddress;
-use starkgo::models::board::{Board, Player, add_move};
+use starkgo::models::board::{Board, Capture, Player, add_move};
 use starkgo::models::move::{Move, PlayerMove};
 
 #[derive(Serde, Copy, Drop, Introspect, PartialEq, Print)]
@@ -15,12 +15,6 @@ enum GameState {
 struct StartVote {
     controller: Option<bool>,
     opponent: Option<bool>,
-}
-
-#[derive(Serde, Copy, Drop, Introspect, PartialEq)]
-struct Capture {
-    black: u8,
-    white: u8,
 }
 
 #[derive(Serde, Copy, Drop, Introspect, PartialEq)]
@@ -40,17 +34,34 @@ struct Games {
     opponent: Option<ContractAddress>,
     controller_has_black: StartVote,
     board: Board,
+    previous_board: Board,  // used for ko
     nb_moves: u32,
     capture: Capture,
     new_turn_player: Player,
     result: GameResult,
 }
 
+impl AddEqCapture of AddEq<Capture> {
+    fn add_eq(ref self: Capture, other: Capture) {
+        self.black += other.black;
+        self.white += other.black;
+    }
+}
+
 fn applyMove(game: @Games, player: Player, move: Move) -> Games {
     let mut new_game = game.clone();
     match move {
         Move::Play(player_move) => {
-            add_move(ref new_game.board, player, player_move.move_position);
+            let previous_board = *game.previous_board;
+            let current_board = *game.board;
+            let capture = add_move(ref new_game.board, player, player_move.move_position);
+            if let Option::Some(val) = capture{
+                new_game.capture += val;
+            }
+            if new_game.board == previous_board {
+                panic!("Move forbidden by ko rule");
+            };
+            new_game.previous_board = current_board;
             if player == Player::Black {
                 new_game.new_turn_player = Player::White;
             } else {
