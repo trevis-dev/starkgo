@@ -126,6 +126,18 @@ struct Capture {
 }
 
 #[derive(Serde, Copy, Drop, Introspect, PartialEq)]
+struct Prisoners {
+    black: u32,
+    white: u32,
+}
+
+impl CaptureIntoPrisoners of Into<Capture, Prisoners> {
+    fn into(self: Capture) -> Prisoners {
+        Prisoners { black: self.white, white: self.black }
+    }
+}
+
+#[derive(Serde, Copy, Drop, Introspect, PartialEq)]
 struct Position {
     x: Row,
     y: Column,

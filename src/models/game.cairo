@@ -1,5 +1,5 @@
 use starknet::ContractAddress;
-use starkgo::models::board::{Board, Capture, Player, Move, PlayerMove, add_move};
+use starkgo::models::board::{Board, Prisoners, Player, Move, PlayerMove, add_move, Position};
 
 #[derive(Serde, Copy, Drop, Introspect, PartialEq, Print)]
 enum GameState {
@@ -48,38 +48,41 @@ struct Games {
     board: Board,
     previous_board: Board,  // used for ko
     nb_moves: u32,
-    capture: Capture,
+    prisoners: Prisoners,
     new_turn_player: Player,
     result: GameResult,
 }
 
-impl AddEqCapture of AddEq<Capture> {
-    fn add_eq(ref self: Capture, other: Capture) {
+impl AddEqPrisoners of AddEq<Prisoners> {
+    fn add_eq(ref self: Prisoners, other: Prisoners) {
         self.black += other.black;
         self.white += other.white;
     }
+}
+
+fn applyGameMove(ref new_game: Games, game: @Games, player: Player, position: Position) -> Games {
+    let previous_board = *game.previous_board;
+    let current_board = *game.board;
+    let capture = add_move(ref new_game.board, player, position);
+    if let Option::Some(val) = capture {
+        new_game.prisoners += val.into();
+    }
+    assert!(new_game.board != previous_board, "Move forbidden by ko rule");
+    new_game.previous_board = current_board;
+    if player == Player::Black {
+        new_game.new_turn_player = Player::White;
+    } else {
+        new_game.new_turn_player = Player::Black;
+    };
+    new_game.nb_moves += 1;
+    new_game
 }
 
 fn applyMove(game: @Games, player: Player, move: Move) -> Games {
     let mut new_game = game.clone();
     match move {
         Move::Play(player_move) => {
-            let previous_board = *game.previous_board;
-            let current_board = *game.board;
-            let capture = add_move(ref new_game.board, player, player_move.move_position);
-            if let Option::Some(val) = capture {
-                new_game.capture += val;
-            }
-            if new_game.board == previous_board {
-                panic!("Move forbidden by ko rule");
-            };
-            new_game.previous_board = current_board;
-            if player == Player::Black {
-                new_game.new_turn_player = Player::White;
-            } else {
-                new_game.new_turn_player = Player::Black;
-            };
-            new_game.nb_moves += 1;
+            applyGameMove(ref new_game, game, player, player_move.move_position);
         },
         _ => { 
             // todo

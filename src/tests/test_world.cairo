@@ -10,7 +10,10 @@ mod tests {
     use dojo::test_utils::{spawn_test_world, deploy_contract};
     use starkgo::{
         systems::{actions::{actions, IActionsDispatcher, IActionsDispatcherTrait}},
-        models::game::{Games, GameState, games}
+        models::{
+            game::{games, Prisoners, Games, GameState, Move}, 
+            board::{PlayerMove, Position, Row, Column, print_board}
+        }
     };
 
     fn setup_world(game_id: felt252) -> (IWorldDispatcher, IActionsDispatcher) {
@@ -53,5 +56,111 @@ mod tests {
         actions_system.join_game(game_id);
         let current_game = get!(world, game_id, (Games));
         assert!(current_game.state == GameState::Joined);
+    }
+
+    #[test]
+    #[available_gas(59000000)]
+    fn test_start() {
+        let game_id: felt252 = 1;        
+        let controller = starknet::contract_address_const::<0x01>();
+
+        let (world, actions_system) = setup_world(game_id);
+        let opponent = starknet::contract_address_const::<0x2>();
+        actions_system.create_game(game_id);
+        set_contract_address(opponent);
+        actions_system.join_game(game_id);
+        set_contract_address(controller);
+        actions_system.set_black(game_id, true);
+        set_contract_address(opponent);
+        actions_system.set_black(game_id, true);
+        let current_game = get!(world, game_id, (Games));
+        assert!(current_game.state == GameState::Ongoing);
+    }
+
+    #[test]
+    #[should_panic(expected: ("Move forbidden by ko rule", 0x454e545259504f494e545f4641494c4544))]
+    #[available_gas(762000000)]
+    // #[ignore]
+    fn test_capture_and_ko() {
+        let game_id: felt252 = 1;        
+        let controller = starknet::contract_address_const::<0x01>();
+        let (world, actions_system) = setup_world(game_id);
+        let opponent = starknet::contract_address_const::<0x2>();
+        actions_system.create_game(game_id);
+        set_contract_address(opponent);
+        actions_system.join_game(game_id);
+        set_contract_address(controller);
+        actions_system.set_black(game_id, true);
+        set_contract_address(opponent);
+        actions_system.set_black(game_id, true);
+
+        set_contract_address(controller);
+        actions_system.play_move(game_id, Position { x: Row::D, y: Column::Five });
+        set_contract_address(opponent);
+        actions_system.play_move(game_id, Position { x: Row::D, y: Column::Six });
+        set_contract_address(controller);
+        actions_system.play_move(game_id, Position { x: Row::E, y: Column::Six });
+        set_contract_address(opponent);
+        actions_system.play_move(game_id, Position { x: Row::E, y: Column::Five });
+        set_contract_address(controller);
+        actions_system.play_move(game_id, Position { x: Row::D, y: Column::Seven });
+        set_contract_address(opponent);
+        actions_system.play_move(game_id, Position { x: Row::F, y: Column::Six });
+        set_contract_address(controller);
+        actions_system.play_move(game_id, Position { x: Row::C, y: Column::Six });
+
+        let current_game = get!(world, game_id, (Games));
+        assert!(current_game.prisoners == Prisoners { black: 1, white: 0 });
+        set_contract_address(opponent);
+        actions_system.play_move(game_id, Position { x: Row::E, y: Column::Seven });
+        set_contract_address(controller);
+        actions_system.play_move(game_id, Position { x: Row::E, y: Column::Four });
+        set_contract_address(opponent);
+        actions_system.play_move(game_id, Position { x: Row::D, y: Column::Six });
+        let current_game = get!(world, game_id, (Games));
+        assert!(current_game.prisoners == Prisoners { black: 1, white: 1 });
+        set_contract_address(controller);
+        actions_system.play_move(game_id, Position { x: Row::E, y: Column::Six });
+    }
+
+    #[test]
+    #[available_gas(327000000)]
+    // #[ignore]
+    fn test_capture_multiple_groups() {
+        let game_id: felt252 = 1;        
+        let controller = starknet::contract_address_const::<0x01>();
+        let (world, actions_system) = setup_world(game_id);
+        let opponent = starknet::contract_address_const::<0x2>();
+        
+        actions_system.create_game(game_id);
+        set_contract_address(opponent);
+        actions_system.join_game(game_id);
+        set_contract_address(controller);
+        actions_system.set_black(game_id, true);
+        set_contract_address(opponent);
+        actions_system.set_black(game_id, true);
+
+        set_contract_address(controller);
+        actions_system.play_move(game_id, Position { x: Row::A, y: Column::One });
+        set_contract_address(opponent);
+        actions_system.play_move(game_id, Position { x: Row::B, y: Column::One });
+        set_contract_address(controller);
+        actions_system.play_move(game_id, Position { x: Row::A, y: Column::Three });
+        set_contract_address(opponent);
+        actions_system.play_move(game_id, Position { x: Row::B, y: Column::Three });
+        set_contract_address(controller);
+        actions_system.play_move(game_id, Position { x: Row::B, y: Column::Two });
+        set_contract_address(opponent);
+        actions_system.play_move(game_id, Position { x: Row::C, y: Column::Two });
+        set_contract_address(controller);
+        actions_system.play_move(game_id, Position { x: Row::C, y: Column::Three });
+        set_contract_address(opponent);
+        actions_system.play_move(game_id, Position { x: Row::A, y: Column::Four });
+        set_contract_address(controller);
+        actions_system.play_move(game_id, Position { x: Row::D, y: Column::Two });
+        set_contract_address(opponent);
+        actions_system.play_move(game_id, Position { x: Row::A, y: Column::Two });
+        let current_game = get!(world, game_id, (Games));
+        assert!(current_game.prisoners == Prisoners { black: 0, white: 3 });
     }
 }

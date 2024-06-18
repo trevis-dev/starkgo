@@ -1,5 +1,5 @@
 
-use starkgo::models::board::{Move};
+use starkgo::models::board::{Move, Position};
 
 #[dojo::interface]
 trait IActions {
@@ -7,12 +7,13 @@ trait IActions {
     fn join_game(ref world: IWorldDispatcher, game_id: felt252) -> bool;
     fn set_black(ref world: IWorldDispatcher, game_id: felt252, is_controller: bool);
     fn move(ref world: IWorldDispatcher, game_id: felt252, move: Move);
+    fn play_move(ref world: IWorldDispatcher, game_id: felt252, position: Position);
 }
 
 #[dojo::contract]
 mod actions {
     use super::{ IActions, Move };
-    use starkgo::models::game::{ Capture, Games, GameState, GameResult, StartVote, applyMove};
+    use starkgo::models::game::{ Prisoners, Games, GameState, GameResult, StartVote, applyMove, applyGameMove};
     use starkgo::models::board::{ Board, Player, Position};
     use starknet::{ ContractAddress, get_caller_address };
 
@@ -49,7 +50,7 @@ mod actions {
                                 board: 0,
                                 previous_board: 0,
                                 nb_moves: 0,
-                                capture: Capture { black: 0, white: 0 },
+                                prisoners: Prisoners { black: 0, white: 0 },
                                 new_turn_player: Player::None,
                                 result: GameResult { winner: Player::None, is_resign: false, double_score_diff: 0},
                             }
@@ -92,7 +93,7 @@ mod actions {
                                             board: game.board,
                                             previous_board: game.previous_board,
                                             nb_moves: game.nb_moves,
-                                            capture: game.capture,
+                                            prisoners: game.prisoners,
                                             new_turn_player: game.new_turn_player,
                                             result: game.result,
                                         }
@@ -144,7 +145,7 @@ mod actions {
                             board: game.board,
                             previous_board: game.previous_board,
                             nb_moves: game.nb_moves,
-                            capture: game.capture,
+                            prisoners: game.prisoners,
                             new_turn_player: Player::Black,
                             result: game.result,
                         }
@@ -161,7 +162,7 @@ mod actions {
                             board: game.board,
                             previous_board: game.previous_board,
                             nb_moves: game.nb_moves,
-                            capture: game.capture,
+                            prisoners: game.prisoners,
                             new_turn_player: game.new_turn_player,
                             result: game.result,
                         }
@@ -181,7 +182,7 @@ mod actions {
                             board: game.board,
                             previous_board: game.previous_board,
                             nb_moves: game.nb_moves,
-                            capture: game.capture,
+                            prisoners: game.prisoners,
                             new_turn_player: Player::Black,
                             result: game.result,
                         }
@@ -198,7 +199,7 @@ mod actions {
                             board: game.board,
                             previous_board: game.previous_board,
                             nb_moves: game.nb_moves,
-                            capture: game.capture,
+                            prisoners: game.prisoners,
                             new_turn_player: game.new_turn_player,
                             result: game.result,
                         }
@@ -232,6 +233,26 @@ mod actions {
             };
             set!(world, (new_game));
         }
+
+        fn play_move(ref world: IWorldDispatcher, game_id: felt252, position: Position) {
+            let player_address = get_caller_address();
+            let game = get!(world, game_id, (Games));
+
+            if game.state != GameState::Ongoing {
+                panic!("Not in 'Ongoing' state");
+            };
+            let player: Player = get_player(@game, player_address);
+            assert!(player == game.new_turn_player, "Not player's turn.");
+            let mut new_game = game.clone();
+            applyGameMove(ref new_game, @game, player, position);
+            emit!(world, Moved {
+                game_id,
+                move_nb: new_game.nb_moves,
+                player,
+                position,
+            });
+            set!(world, (new_game));
+        }
     }
     
     fn get_player(game: @Games, player_address: ContractAddress) -> Player {
@@ -259,5 +280,4 @@ mod actions {
         };
         player
     }
-
 }

@@ -277,6 +277,22 @@
         ],
         "outputs": [],
         "state_mutability": "external"
+      },
+      {
+        "type": "function",
+        "name": "play_move",
+        "inputs": [
+          {
+            "name": "game_id",
+            "type": "core::felt252"
+          },
+          {
+            "name": "position",
+            "type": "starkgo::models::board::Position"
+          }
+        ],
+        "outputs": [],
+        "state_mutability": "external"
       }
     ]
   },

@@ -420,7 +420,7 @@
   },
   {
     "type": "struct",
-    "name": "starkgo::models::board::Capture",
+    "name": "starkgo::models::board::Prisoners",
     "members": [
       {
         "name": "black",
@@ -505,8 +505,8 @@
         "type": "core::integer::u32"
       },
       {
-        "name": "capture",
-        "type": "starkgo::models::board::Capture"
+        "name": "prisoners",
+        "type": "starkgo::models::board::Prisoners"
       },
       {
         "name": "new_turn_player",
