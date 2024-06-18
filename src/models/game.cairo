@@ -44,7 +44,7 @@ struct Games {
 impl AddEqCapture of AddEq<Capture> {
     fn add_eq(ref self: Capture, other: Capture) {
         self.black += other.black;
-        self.white += other.black;
+        self.white += other.white;
     }
 }
 
@@ -55,7 +55,7 @@ fn applyMove(game: @Games, player: Player, move: Move) -> Games {
             let previous_board = *game.previous_board;
             let current_board = *game.board;
             let capture = add_move(ref new_game.board, player, player_move.move_position);
-            if let Option::Some(val) = capture{
+            if let Option::Some(val) = capture {
                 new_game.capture += val;
             }
             if new_game.board == previous_board {
