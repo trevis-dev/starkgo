@@ -27,6 +27,21 @@ fn pow2_128(exp: usize) -> u128 {
     res
 }
 
+fn expand_mask(mask: u128) -> u256 {
+    // Convert 1 bit flags to 0b11 
+    let mut result: u256 = 0;
+    let mut current_bit_position: usize = 0;
+    let mut remainder = mask;
+    while remainder > 0 {
+        if remainder % 2 == 1 {
+            result += 3 * pow2(current_bit_position);
+        }
+        current_bit_position += 2;
+        remainder /= 2;
+    };
+    result
+}
+
 fn _set_value(ref board: Board, x: usize, y: usize, value: u8) -> Option<Capture> {
     // Check that position is empty before calling
     let position: usize = (x * GRID_SIZE + y) * 2;
@@ -35,7 +50,8 @@ fn _set_value(ref board: Board, x: usize, y: usize, value: u8) -> Option<Capture
     board = board | positioned_new_value;
     match remove_dead_stones(@board, x, y, value) {
         Option::Some(move_capture) => {
-            // remove stones
+            let capture_mask: u256 = expand_mask(move_capture.stones_mask);
+            board = board & ~capture_mask;
             Option::Some(Capture { black: move_capture.black, white: move_capture.white })
         },
         Option::None => { return Option::None; }
@@ -303,7 +319,7 @@ mod tests {
     }
     
     #[test]
-    #[available_gas(4300000000)]
+    #[available_gas(31200000)]
     fn test_capture_stone() {
         // let mut board: Board = 0;
         // let _ = add_move(ref board, Player::Black, Position { x: Row::D, y: Column::Six });
@@ -318,6 +334,6 @@ mod tests {
         // white plays elsewhere
         let capture = add_move(ref board, Player::Black, Position { x: Row::C, y: Column::Five });
         assert(capture == Option::Some(Capture { black: 0, white: 1 }), 'Incorrect capture');
-        // assert(board == 1208945419297799677149184, 'Incorrect state after capture.');  # todo
+        assert(board == 1208945419297799677149184, 'Incorrect state after capture.');
     }
 }
