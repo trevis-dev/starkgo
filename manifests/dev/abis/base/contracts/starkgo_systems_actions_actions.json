@@ -179,42 +179,6 @@
     ]
   },
   {
-    "type": "struct",
-    "name": "starkgo::models::board::PlayerMove",
-    "members": [
-      {
-        "name": "move_position",
-        "type": "starkgo::models::board::Position"
-      },
-      {
-        "name": "is_pass",
-        "type": "core::bool"
-      },
-      {
-        "name": "is_resign",
-        "type": "core::bool"
-      }
-    ]
-  },
-  {
-    "type": "enum",
-    "name": "starkgo::models::board::Move",
-    "variants": [
-      {
-        "name": "Play",
-        "type": "starkgo::models::board::PlayerMove"
-      },
-      {
-        "name": "Pass",
-        "type": "starkgo::models::board::PlayerMove"
-      },
-      {
-        "name": "Resign",
-        "type": "starkgo::models::board::PlayerMove"
-      }
-    ]
-  },
-  {
     "type": "interface",
     "name": "starkgo::systems::actions::IActions",
     "items": [
@@ -257,22 +221,6 @@
           {
             "name": "is_controller",
             "type": "core::bool"
-          }
-        ],
-        "outputs": [],
-        "state_mutability": "external"
-      },
-      {
-        "type": "function",
-        "name": "move",
-        "inputs": [
-          {
-            "name": "game_id",
-            "type": "core::felt252"
-          },
-          {
-            "name": "move",
-            "type": "starkgo::models::board::Move"
           }
         ],
         "outputs": [],

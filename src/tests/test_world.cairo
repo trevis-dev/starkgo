@@ -11,8 +11,8 @@ mod tests {
     use starkgo::{
         systems::{actions::{actions, IActionsDispatcher, IActionsDispatcherTrait}},
         models::{
-            game::{games, Prisoners, Games, GameState, Move}, 
-            board::{PlayerMove, Position, Row, Column, print_board}
+            game::{games, Prisoners, Games, GameState,}, 
+            board::{Position, Row, Column, print_board}
         }
     };
 

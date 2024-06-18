@@ -1,5 +1,5 @@
 use starknet::ContractAddress;
-use starkgo::models::board::{Board, Prisoners, Player, Move, PlayerMove, add_move, Position};
+use starkgo::models::board::{Board, Prisoners, Player, Position, add_move, };
 
 #[derive(Serde, Copy, Drop, Introspect, PartialEq, Print)]
 enum GameState {
@@ -60,7 +60,7 @@ impl AddEqPrisoners of AddEq<Prisoners> {
     }
 }
 
-fn applyGameMove(ref new_game: Games, game: @Games, player: Player, position: Position) -> Games {
+fn applyMove(ref new_game: Games, game: @Games, player: Player, position: Position) -> Games {
     let previous_board = *game.previous_board;
     let current_board = *game.board;
     let capture = add_move(ref new_game.board, player, position);
@@ -75,18 +75,5 @@ fn applyGameMove(ref new_game: Games, game: @Games, player: Player, position: Po
         new_game.new_turn_player = Player::Black;
     };
     new_game.nb_moves += 1;
-    new_game
-}
-
-fn applyMove(game: @Games, player: Player, move: Move) -> Games {
-    let mut new_game = game.clone();
-    match move {
-        Move::Play(player_move) => {
-            applyGameMove(ref new_game, game, player, player_move.move_position);
-        },
-        _ => { 
-            // todo
-        }
-    }
     new_game
 }

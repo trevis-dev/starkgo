@@ -1,19 +1,18 @@
 
-use starkgo::models::board::{Move, Position};
+use starkgo::models::board::{Position};
 
 #[dojo::interface]
 trait IActions {
     fn create_game(ref world: IWorldDispatcher, game_id: felt252);
     fn join_game(ref world: IWorldDispatcher, game_id: felt252) -> bool;
     fn set_black(ref world: IWorldDispatcher, game_id: felt252, is_controller: bool);
-    fn move(ref world: IWorldDispatcher, game_id: felt252, move: Move);
     fn play_move(ref world: IWorldDispatcher, game_id: felt252, position: Position);
 }
 
 #[dojo::contract]
 mod actions {
-    use super::{ IActions, Move };
-    use starkgo::models::game::{ Prisoners, Games, GameState, GameResult, StartVote, applyMove, applyGameMove};
+    use super::{ IActions };
+    use starkgo::models::game::{ Prisoners, Games, GameState, GameResult, StartVote, applyMove};
     use starkgo::models::board::{ Board, Player, Position};
     use starknet::{ ContractAddress, get_caller_address };
 
@@ -208,32 +207,6 @@ mod actions {
             };
         }
 
-        fn move(ref world: IWorldDispatcher, game_id: felt252, move: Move) {
-            let player_address = get_caller_address();
-            let game = get!(world, game_id, (Games));
-
-            if game.state != GameState::Ongoing {
-                panic!("Not in 'Ongoing' state");
-            };
-            let player: Player = get_player(@game, player_address);
-            assert!(player == game.new_turn_player, "Not player's turn.");
-            let new_game = applyMove(@game, player, move);
-            match move {
-                Move::Play(player_move) => {
-                    emit!(world, Moved {
-                        game_id: game_id,
-                        move_nb: new_game.nb_moves,
-                        player: player,
-                        position: player_move.move_position,
-                    });
-                },
-                _ => {
-                    //todo
-                }
-            };
-            set!(world, (new_game));
-        }
-
         fn play_move(ref world: IWorldDispatcher, game_id: felt252, position: Position) {
             let player_address = get_caller_address();
             let game = get!(world, game_id, (Games));
@@ -244,7 +217,7 @@ mod actions {
             let player: Player = get_player(@game, player_address);
             assert!(player == game.new_turn_player, "Not player's turn.");
             let mut new_game = game.clone();
-            applyGameMove(ref new_game, @game, player, position);
+            applyMove(ref new_game, @game, player, position);
             emit!(world, Moved {
                 game_id,
                 move_nb: new_game.nb_moves,
