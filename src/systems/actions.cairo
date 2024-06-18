@@ -35,31 +35,25 @@ mod actions {
         fn create_game(ref world: IWorldDispatcher, game_id: felt252) {
             let player_address = get_caller_address();
             let game = get!(world, game_id, (Games));
-            match game.state {
-                GameState::Inexistent => {
-                    set!(
-                        world,
-                        (
-                            Games {
-                                game_id,
-                                state: GameState::Created,
-                                controller: Option::Some(player_address),
-                                opponent: Option::None,
-                                controller_has_black: StartVote { controller: Option::None, opponent: Option::None },
-                                board: 0,
-                                previous_board: 0,
-                                nb_moves: 0,
-                                prisoners: Prisoners { black: 0, white: 0 },
-                                new_turn_player: Player::None,
-                                result: GameResult { winner: Player::None, is_resign: false, double_score_diff: 0},
-                            }
-                        )
-                    );
-                },
-                _ => {
-                    panic_with_felt252('game_id already used');
-                }
-            };
+            assert!(game.state == GameState::Inexistent, "game_id already used");
+            set!(
+                world,
+                (
+                    Games {
+                        game_id,
+                        state: GameState::Created,
+                        controller: Option::Some(player_address),
+                        opponent: Option::None,
+                        controller_has_black: StartVote { controller: Option::None, opponent: Option::None },
+                        board: 0,
+                        previous_board: 0,
+                        nb_moves: 0,
+                        prisoners: Prisoners { black: 0, white: 0 },
+                        new_turn_player: Player::None,
+                        result: GameResult { winner: Player::None, is_resign: false, double_score_diff: 0},
+                    }
+                )
+            );
         }
 
         fn join_game(ref world: IWorldDispatcher, game_id: felt252) -> bool {
@@ -208,22 +202,23 @@ mod actions {
         }
 
         fn play_move(ref world: IWorldDispatcher, game_id: felt252, position: Position) {
-            let player_address = get_caller_address();
             let game = get!(world, game_id, (Games));
+            assert!(game.state == GameState::Ongoing, "Not in 'Ongoing' state");
 
-            if game.state != GameState::Ongoing {
-                panic!("Not in 'Ongoing' state");
-            };
+            let player_address = get_caller_address();
             let player: Player = get_player(@game, player_address);
             assert!(player == game.new_turn_player, "Not player's turn.");
+
             let mut new_game = game.clone();
             applyMove(ref new_game, @game, player, position);
+
             emit!(world, Moved {
                 game_id,
                 move_nb: new_game.nb_moves,
                 player,
                 position,
             });
+
             set!(world, (new_game));
         }
     }
@@ -231,9 +226,7 @@ mod actions {
     fn get_player(game: @Games, player_address: ContractAddress) -> Player {
         let mut player = Player::None;
         if *game.controller == Option::Some(player_address) || *game.opponent == Option::Some(player_address) {
-            if *game.state == GameState::Created || *game.state == GameState::Joined {
-                panic!("Players not yet determined");
-            };
+            assert!(*game.state != GameState::Created && *game.state != GameState::Joined, "Players not yet determined");
             let controller_has_black: bool = (*game.controller_has_black.controller).unwrap();  // votes are identical
             if *game.controller == Option::Some(player_address) {
                 if controller_has_black {
