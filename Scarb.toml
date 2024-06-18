@@ -22,7 +22,7 @@ move_o = "./scripts/move_o.sh"
 moves = "./scripts/moves.sh"
 
 [dependencies]
-dojo = { git = "https://github.com/dojoengine/dojo", tag = "v0.7.0" }
+dojo = { git = "https://github.com/dojoengine/dojo", tag = "v0.7.1" }
 
 [[target.dojo]]
 
