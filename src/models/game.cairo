@@ -1,6 +1,5 @@
 use starknet::ContractAddress;
-use starkgo::models::board::{Board, Capture, Player, add_move};
-use starkgo::models::move::{Move, PlayerMove};
+use starkgo::models::board::{Board, Capture, Player, Move, PlayerMove, add_move};
 
 #[derive(Serde, Copy, Drop, Introspect, PartialEq, Print)]
 enum GameState {
@@ -10,6 +9,19 @@ enum GameState {
     Ongoing,
     Finished,
 }
+
+impl GameStateIntoByteArray of Into<GameState, ByteArray> {
+    fn into(self: GameState) -> ByteArray {
+        match self {
+            GameState::Inexistent => "Inexistent",
+            GameState::Created => "Created",
+            GameState::Joined => "Joined",
+            GameState::Ongoing => "Ongoing",
+            GameState::Finished => "Finished"
+        }
+    }
+}
+
 
 #[derive(Serde, Copy, Drop, Introspect, PartialEq)]
 struct StartVote {

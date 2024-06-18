@@ -180,7 +180,7 @@
   },
   {
     "type": "struct",
-    "name": "starkgo::models::move::PlayerMove",
+    "name": "starkgo::models::board::PlayerMove",
     "members": [
       {
         "name": "move_position",
@@ -198,19 +198,19 @@
   },
   {
     "type": "enum",
-    "name": "starkgo::models::move::Move",
+    "name": "starkgo::models::board::Move",
     "variants": [
       {
         "name": "Play",
-        "type": "starkgo::models::move::PlayerMove"
+        "type": "starkgo::models::board::PlayerMove"
       },
       {
         "name": "Pass",
-        "type": "starkgo::models::move::PlayerMove"
+        "type": "starkgo::models::board::PlayerMove"
       },
       {
         "name": "Resign",
-        "type": "starkgo::models::move::PlayerMove"
+        "type": "starkgo::models::board::PlayerMove"
       }
     ]
   },
@@ -272,7 +272,7 @@
           },
           {
             "name": "move",
-            "type": "starkgo::models::move::Move"
+            "type": "starkgo::models::board::Move"
           }
         ],
         "outputs": [],

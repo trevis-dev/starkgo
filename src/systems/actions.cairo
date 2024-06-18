@@ -1,5 +1,5 @@
 
-use starkgo::models::move::{Move};
+use starkgo::models::board::{Move};
 
 #[dojo::interface]
 trait IActions {

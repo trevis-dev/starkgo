@@ -6,7 +6,6 @@ mod models {
     mod board;
     mod game;
     mod group;
-    mod move;
 }
 
 mod tests {

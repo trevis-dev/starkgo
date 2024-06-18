@@ -272,6 +272,20 @@ impl PositionDisplay of Display<Position> {
 }
 
 
+# [derive(Serde, Copy, Drop, Introspect, PartialEq)]
+enum Move {
+    Play: PlayerMove,
+    Pass: PlayerMove,
+    Resign: PlayerMove,
+}
+
+# [derive(Serde, Copy, Drop, Introspect, PartialEq)]
+struct PlayerMove {
+    move_position: Position,
+    is_pass: bool,
+    is_resign: bool,
+}
+
 #[cfg(test)]
 mod tests {
     use super::{Board, Capture, Position, Player, Row, Column, add_move, get_move, print_board};
