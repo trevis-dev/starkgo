@@ -1,7 +1,7 @@
 use starknet::ContractAddress;
-use starkgo::models::board::{Board, Prisoners, Player, Position, add_move, };
+use starkgo::models::board::{Board, Prisoners, Player, Position, add_move};
 
-#[derive(Serde, Copy, Drop, Introspect, PartialEq, Print)]
+#[derive(Serde, Copy, Drop, Introspect, PartialEq)]
 enum GameState {
     Inexistent,
     Created,

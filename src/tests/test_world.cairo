@@ -79,7 +79,7 @@ mod tests {
 
     #[test]
     #[should_panic(expected: ("Move forbidden by ko rule", 0x454e545259504f494e545f4641494c4544))]
-    #[available_gas(701000000)]
+    #[available_gas(480000000)]
     // #[ignore]
     fn test_capture_and_ko() {
         let game_id: felt252 = 1;        
@@ -124,7 +124,7 @@ mod tests {
     }
 
     #[test]
-    #[available_gas(323936510)]
+    #[available_gas(269000000)]
     // #[ignore]
     fn test_capture_multiple_groups() {
         let game_id: felt252 = 1;        
@@ -165,7 +165,7 @@ mod tests {
     }
 
     #[test]
-    #[available_gas(131365194)]
+    #[available_gas(125000000)]
     // #[ignore]
     fn test_pass_to_finish() {
         let game_id: felt252 = 1;        

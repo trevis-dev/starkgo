@@ -1,3 +1,4 @@
+use core::option::OptionTrait;
 use core::array::ArrayTrait;
 use core::fmt::{Display, Formatter, Error};
 use starkgo::models::group::remove_dead_stones;
@@ -59,10 +60,8 @@ fn _set_value(ref board: Board, x: usize, y: usize, value: u8) -> Option<Capture
 }
 
 fn _get_value(board: @Board, x: usize, y: usize) -> u8 {
-    let bit_position = (x * GRID_SIZE + y) * 2;
-    let bit_mask = BIT_MASK * pow2(bit_position);
-
-    ((*board & bit_mask) / pow2(bit_position)).try_into().unwrap()
+    let bit_position = pow2((x * GRID_SIZE + y) * 2);
+    ((*board / bit_position) % 4).try_into().unwrap()
 }
 
 fn getLabel(value: u8) -> ByteArray  {
@@ -298,14 +297,14 @@ mod tests {
     use super::{Board, Capture, Position, Player, Row, Column, add_move, get_move, print_board};
 
     #[test]
-    #[available_gas(25000000)]
+    #[available_gas(14000000)]
     fn test_first_move_gaz() {
         let mut board: Board = 0;
         let _ = add_move(ref board, Player::Black, Position { x: Row::D, y: Column::Six });
     }
 
     #[test]
-    #[available_gas(5100000)]
+    #[available_gas(2600000)]
     fn test_get_move_gaz() {
         // let mut board: Board = 0;
         // let _ = add_move(ref board, Player::Black, Position { x: Row::D, y: Column::Six });
@@ -319,7 +318,7 @@ mod tests {
     // print_board(@board);
 
     #[test]
-    #[available_gas(92718962)]
+    #[available_gas(51000000)]
     fn test_multiple_moves() {
         let mut board: Board = 0;
         let _ = add_move(ref board, Player::Black, Position { x: Row::D, y: Column::Six });
@@ -340,7 +339,7 @@ mod tests {
     }
     
     #[test]
-    #[available_gas(28484592)]
+    #[available_gas(16400000)]
     fn test_capture_stone() {
         // let mut board: Board = 0;
         // let _ = add_move(ref board, Player::Black, Position { x: Row::D, y: Column::Six });
