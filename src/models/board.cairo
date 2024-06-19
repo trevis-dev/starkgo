@@ -119,7 +119,7 @@ fn get_move(board: @Board, position: Position) -> u8 {
     _get_value(board, x, y)
 }
 
-#[derive(Serde, Copy, Drop, Introspect, PartialEq)]
+#[derive(Drop, PartialEq)]
 struct Capture {
     black: u32,
     white: u32,
@@ -298,7 +298,7 @@ mod tests {
     use super::{Board, Capture, Position, Player, Row, Column, add_move, get_move, print_board};
 
     #[test]
-    #[available_gas(30642290)]
+    #[available_gas(25000000)]
     fn test_first_move_gaz() {
         let mut board: Board = 0;
         let _ = add_move(ref board, Player::Black, Position { x: Row::D, y: Column::Six });
@@ -319,7 +319,7 @@ mod tests {
     // print_board(@board);
 
     #[test]
-    #[available_gas(101000000)]
+    #[available_gas(92718962)]
     fn test_multiple_moves() {
         let mut board: Board = 0;
         let _ = add_move(ref board, Player::Black, Position { x: Row::D, y: Column::Six });
@@ -340,7 +340,7 @@ mod tests {
     }
     
     #[test]
-    #[available_gas(31200000)]
+    #[available_gas(28484592)]
     fn test_capture_stone() {
         // let mut board: Board = 0;
         // let _ = add_move(ref board, Player::Black, Position { x: Row::D, y: Column::Six });

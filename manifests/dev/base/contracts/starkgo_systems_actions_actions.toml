@@ -1,6 +1,6 @@
 kind = "DojoContract"
-class_hash = "0x6a622c06992d938e5318f457e68309d43975814cc536b78ad5bf591a00aaecd"
-original_class_hash = "0x6a622c06992d938e5318f457e68309d43975814cc536b78ad5bf591a00aaecd"
+class_hash = "0x47850e40e198b68c42a21836d8b6a763500231de2965ac8d7c863bf450604f7"
+original_class_hash = "0x47850e40e198b68c42a21836d8b6a763500231de2965ac8d7c863bf450604f7"
 base_class_hash = "0x0"
 abi = "manifests/dev/abis/base/contracts/starkgo_systems_actions_actions.json"
 reads = []
