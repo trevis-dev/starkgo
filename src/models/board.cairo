@@ -256,6 +256,16 @@ impl PlayerIntoU8 of Into<Player, u8> {
     }
 }
 
+impl BitNotPlayer of BitNot<Player> {
+    fn bitnot(a: Player) -> Player {
+        match a {
+            Player::None => Player::None,
+            Player::Black => Player::White,
+            Player::White => Player::Black
+        }
+    }
+}
+
 impl PlayerIntoByteArray of Into<Player, ByteArray> {
     fn into(self: Player) -> ByteArray {
         match self {

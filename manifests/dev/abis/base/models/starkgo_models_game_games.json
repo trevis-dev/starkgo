@@ -513,6 +513,10 @@
         "type": "starkgo::models::board::Player"
       },
       {
+        "name": "last_passed",
+        "type": "core::bool"
+      },
+      {
         "name": "result",
         "type": "starkgo::models::game::GameResult"
       }

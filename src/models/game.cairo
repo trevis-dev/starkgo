@@ -50,6 +50,7 @@ struct Games {
     nb_moves: u32,
     prisoners: Prisoners,
     new_turn_player: Player,
+    last_passed: bool,
     result: GameResult,
 }
 
@@ -69,11 +70,7 @@ fn applyMove(ref new_game: Games, game: @Games, player: Player, position: Positi
     }
     assert!(new_game.board != previous_board, "Move forbidden by ko rule");
     new_game.previous_board = current_board;
-    if player == Player::Black {
-        new_game.new_turn_player = Player::White;
-    } else {
-        new_game.new_turn_player = Player::Black;
-    };
+    new_game.new_turn_player = ~player;
     new_game.nb_moves += 1;
     new_game
 }

@@ -241,6 +241,18 @@
         ],
         "outputs": [],
         "state_mutability": "external"
+      },
+      {
+        "type": "function",
+        "name": "pass",
+        "inputs": [
+          {
+            "name": "game_id",
+            "type": "core::felt252"
+          }
+        ],
+        "outputs": [],
+        "state_mutability": "external"
       }
     ]
   },
@@ -338,6 +350,11 @@
         "kind": "key"
       },
       {
+        "name": "is_pass",
+        "type": "core::bool",
+        "kind": "data"
+      },
+      {
         "name": "move_nb",
         "type": "core::integer::u32",
         "kind": "data"
@@ -366,6 +383,11 @@
       },
       {
         "name": "Moved",
+        "type": "starkgo::systems::actions::actions::Moved",
+        "kind": "nested"
+      },
+      {
+        "name": "Passed",
         "type": "starkgo::systems::actions::actions::Moved",
         "kind": "nested"
       }

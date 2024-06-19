@@ -7,28 +7,33 @@ trait IActions {
     fn join_game(ref world: IWorldDispatcher, game_id: felt252) -> bool;
     fn set_black(ref world: IWorldDispatcher, game_id: felt252, is_controller: bool);
     fn play_move(ref world: IWorldDispatcher, game_id: felt252, position: Position);
+    fn pass(ref world: IWorldDispatcher, game_id: felt252);
 }
 
 #[dojo::contract]
 mod actions {
     use super::{ IActions };
     use starkgo::models::game::{ Prisoners, Games, GameState, GameResult, StartVote, applyMove};
-    use starkgo::models::board::{ Board, Player, Position};
+    use starkgo::models::board::{ Board, Player, Position, Row, Column};
     use starknet::{ ContractAddress, get_caller_address };
 
     #[event]
     #[derive(Drop, starknet::Event)]
     enum Event {
         Moved: Moved,
+        Passed: Moved
     }
     #[derive(Drop, Serde, starknet::Event)]
     struct Moved {
         #[key]
         game_id: felt252,
+        is_pass: bool,
         move_nb: u32,
         player: Player,
         position: Position
-    }    
+    }
+
+
 
     #[abi(embed_v0)]
     impl ActionsImpl of IActions<ContractState> {
@@ -50,6 +55,7 @@ mod actions {
                         nb_moves: 0,
                         prisoners: Prisoners { black: 0, white: 0 },
                         new_turn_player: Player::None,
+                        last_passed: false,
                         result: GameResult { winner: Player::None, is_resign: false, double_score_diff: 0},
                     }
                 )
@@ -88,6 +94,7 @@ mod actions {
                                             nb_moves: game.nb_moves,
                                             prisoners: game.prisoners,
                                             new_turn_player: game.new_turn_player,
+                                            last_passed: game.last_passed,
                                             result: game.result,
                                         }
                                     )
@@ -140,6 +147,7 @@ mod actions {
                             nb_moves: game.nb_moves,
                             prisoners: game.prisoners,
                             new_turn_player: Player::Black,
+                            last_passed: game.last_passed,
                             result: game.result,
                         }
                     );    
@@ -157,6 +165,7 @@ mod actions {
                             nb_moves: game.nb_moves,
                             prisoners: game.prisoners,
                             new_turn_player: game.new_turn_player,
+                            last_passed: game.last_passed,
                             result: game.result,
                         }
                     );
@@ -177,6 +186,7 @@ mod actions {
                             nb_moves: game.nb_moves,
                             prisoners: game.prisoners,
                             new_turn_player: Player::Black,
+                            last_passed: game.last_passed,
                             result: game.result,
                         }
                     );    
@@ -194,6 +204,7 @@ mod actions {
                             nb_moves: game.nb_moves,
                             prisoners: game.prisoners,
                             new_turn_player: game.new_turn_player,
+                            last_passed: game.last_passed,
                             result: game.result,
                         }
                     );
@@ -211,14 +222,39 @@ mod actions {
 
             let mut new_game = game.clone();
             applyMove(ref new_game, @game, player, position);
-
+            new_game.last_passed = false;
             emit!(world, Moved {
                 game_id,
                 move_nb: new_game.nb_moves,
                 player,
                 position,
+                is_pass: false
             });
 
+            set!(world, (new_game));
+        }
+
+        fn pass(ref world: IWorldDispatcher, game_id: felt252) {
+            let game = get!(world, game_id, (Games));
+            assert!(game.state == GameState::Ongoing, "Not in 'Ongoing' state");
+
+            let player_address = get_caller_address();
+            let player: Player = get_player(@game, player_address);
+            assert!(player == game.new_turn_player, "Not player's turn.");
+            let mut new_game = game.clone();
+            new_game.new_turn_player = ~player;
+            new_game.nb_moves += 1;
+            new_game.last_passed = true;
+            if game.last_passed {
+                new_game.state = GameState::Finished;
+            }
+            emit!(world, Moved {
+                game_id,
+                move_nb: new_game.nb_moves,
+                player,
+                position : Position {x: Row::None, y: Column::None},
+                is_pass: true,
+            });
             set!(world, (new_game));
         }
     }

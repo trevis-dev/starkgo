@@ -45,7 +45,7 @@ mod tests {
     }
 
     #[test]
-    #[available_gas(34000000)]
+    #[available_gas(35000000)]
     fn test_join() {
         let game_id: felt252 = 1;        
 
@@ -59,7 +59,7 @@ mod tests {
     }
 
     #[test]
-    #[available_gas(59000000)]
+    #[available_gas(63000000)]
     fn test_start() {
         let game_id: felt252 = 1;        
         let controller = starknet::contract_address_const::<0x01>();
@@ -79,7 +79,7 @@ mod tests {
 
     #[test]
     #[should_panic(expected: ("Move forbidden by ko rule", 0x454e545259504f494e545f4641494c4544))]
-    #[available_gas(762000000)]
+    #[available_gas(770000000)]
     // #[ignore]
     fn test_capture_and_ko() {
         let game_id: felt252 = 1;        
@@ -124,7 +124,7 @@ mod tests {
     }
 
     #[test]
-    #[available_gas(327000000)]
+    #[available_gas(337000000)]
     // #[ignore]
     fn test_capture_multiple_groups() {
         let game_id: felt252 = 1;        
@@ -162,5 +162,41 @@ mod tests {
         actions_system.play_move(game_id, Position { x: Row::A, y: Column::Two });
         let current_game = get!(world, game_id, (Games));
         assert!(current_game.prisoners == Prisoners { black: 0, white: 3 });
+    }
+
+    #[test]
+    #[available_gas(133000000)]
+    // #[ignore]
+    fn test_pass_to_finish() {
+        let game_id: felt252 = 1;        
+        let controller = starknet::contract_address_const::<0x01>();
+        let (world, actions_system) = setup_world(game_id);
+        let opponent = starknet::contract_address_const::<0x2>();
+        actions_system.create_game(game_id);
+        set_contract_address(opponent);
+        actions_system.join_game(game_id);
+        set_contract_address(controller);
+        actions_system.set_black(game_id, true);
+        set_contract_address(opponent);
+        actions_system.set_black(game_id, true);
+
+        set_contract_address(controller);
+        actions_system.play_move(game_id, Position { x: Row::C, y: Column::Three });
+
+        let current_game = get!(world, game_id, (Games));
+        assert!(current_game.last_passed == false, "No one passed yet.");
+        assert!(current_game.nb_moves == 1, "Should be one move.");
+        set_contract_address(opponent);
+        actions_system.pass(game_id);
+        let current_game = get!(world, game_id, (Games));
+        assert!(current_game.state == GameState::Ongoing, "Should still be 'Ongoing'.");
+        assert!(current_game.last_passed == true, "Pass not registered.");
+        assert!(current_game.nb_moves == 2, "Should be two moves.");
+        set_contract_address(controller);
+        actions_system.pass(game_id);
+        assert!(current_game.last_passed == true, "Other not registered.");
+        let current_game = get!(world, game_id, (Games));
+        assert!(current_game.nb_moves == 3, "Should be three moves.");
+        assert!(current_game.state == GameState::Finished);
     }
 }
