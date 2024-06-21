@@ -1020,8 +1020,8 @@
     {
       "kind": "DojoContract",
       "address": "0x167359df980dc4435a6baf982375ac517e6f138b5a10d93f2a1acf3c17f5b88",
-      "class_hash": "0x1fb74c53c8d756655f52741d4b6029f3909f3722010422a56c3c351e7dd8ac7",
-      "original_class_hash": "0x1fb74c53c8d756655f52741d4b6029f3909f3722010422a56c3c351e7dd8ac7",
+      "class_hash": "0x16f8f9de73f23d3ea2132e271d7aba78b0d34b61b83c39900519c28ac3e31d1",
+      "original_class_hash": "0x16f8f9de73f23d3ea2132e271d7aba78b0d34b61b83c39900519c28ac3e31d1",
       "base_class_hash": "0x22f3e55b61d86c2ac5239fa3b3b8761f26b9a5c0b5f61ddbd5d756ced498b46",
       "abi": [
         {
@@ -1444,12 +1444,12 @@
         },
         {
           "name": "controller",
-          "type": "Option<ContractAddress>",
+          "type": "ContractAddress",
           "key": false
         },
         {
           "name": "opponent",
-          "type": "Option<ContractAddress>",
+          "type": "ContractAddress",
           "key": false
         },
         {
@@ -1493,8 +1493,8 @@
           "key": false
         }
       ],
-      "class_hash": "0x2eb7d06fccaf06bf60b34629b402098ee4f416ac35f1d43d1578343c8a01288",
-      "original_class_hash": "0x2eb7d06fccaf06bf60b34629b402098ee4f416ac35f1d43d1578343c8a01288",
+      "class_hash": "0x19de84fda8d1d0d460d63339d0083b29762577d0a08908cc72adea12171436b",
+      "original_class_hash": "0x19de84fda8d1d0d460d63339d0083b29762577d0a08908cc72adea12171436b",
       "abi": [
         {
           "type": "impl",
@@ -1847,20 +1847,6 @@
         },
         {
           "type": "enum",
-          "name": "core::option::Option::<core::starknet::contract_address::ContractAddress>",
-          "variants": [
-            {
-              "name": "Some",
-              "type": "core::starknet::contract_address::ContractAddress"
-            },
-            {
-              "name": "None",
-              "type": "()"
-            }
-          ]
-        },
-        {
-          "type": "enum",
           "name": "core::bool",
           "variants": [
             {
@@ -1979,11 +1965,11 @@
             },
             {
               "name": "controller",
-              "type": "core::option::Option::<core::starknet::contract_address::ContractAddress>"
+              "type": "core::starknet::contract_address::ContractAddress"
             },
             {
               "name": "opponent",
-              "type": "core::option::Option::<core::starknet::contract_address::ContractAddress>"
+              "type": "core::starknet::contract_address::ContractAddress"
             },
             {
               "name": "controller_has_black",

@@ -350,20 +350,6 @@
   },
   {
     "type": "enum",
-    "name": "core::option::Option::<core::starknet::contract_address::ContractAddress>",
-    "variants": [
-      {
-        "name": "Some",
-        "type": "core::starknet::contract_address::ContractAddress"
-      },
-      {
-        "name": "None",
-        "type": "()"
-      }
-    ]
-  },
-  {
-    "type": "enum",
     "name": "core::bool",
     "variants": [
       {
@@ -482,11 +468,11 @@
       },
       {
         "name": "controller",
-        "type": "core::option::Option::<core::starknet::contract_address::ContractAddress>"
+        "type": "core::starknet::contract_address::ContractAddress"
       },
       {
         "name": "opponent",
-        "type": "core::option::Option::<core::starknet::contract_address::ContractAddress>"
+        "type": "core::starknet::contract_address::ContractAddress"
       },
       {
         "name": "controller_has_black",

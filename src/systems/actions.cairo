@@ -105,7 +105,7 @@ mod actions {
                         newly_joined = true;
                     };
                 },
-                GameState::Joined => {
+                GameState::Joined | GameState::Ongoing => {
                     let player_address = get_caller_address();
                     check_not_zero(player_address);
                     let zero_address: ContractAddress = Zero::zero();
