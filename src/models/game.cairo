@@ -42,8 +42,8 @@ struct Games {
     #[key]
     game_id: felt252,
     state: GameState,
-    controller: Option<ContractAddress>,
-    opponent: Option<ContractAddress>,
+    controller: ContractAddress,
+    opponent: ContractAddress,
     controller_has_black: StartVote,
     board: Board,
     previous_board: Board,  // used for ko

@@ -1,6 +1,6 @@
 kind = "DojoModel"
-class_hash = "0x2eb7d06fccaf06bf60b34629b402098ee4f416ac35f1d43d1578343c8a01288"
-original_class_hash = "0x2eb7d06fccaf06bf60b34629b402098ee4f416ac35f1d43d1578343c8a01288"
+class_hash = "0x19de84fda8d1d0d460d63339d0083b29762577d0a08908cc72adea12171436b"
+original_class_hash = "0x19de84fda8d1d0d460d63339d0083b29762577d0a08908cc72adea12171436b"
 abi = "manifests/dev/abis/base/models/starkgo_models_game_games.json"
 name = "starkgo::models::game::games"
 
@@ -16,12 +16,12 @@ key = false
 
 [[members]]
 name = "controller"
-type = "Option<ContractAddress>"
+type = "ContractAddress"
 key = false
 
 [[members]]
 name = "opponent"
-type = "Option<ContractAddress>"
+type = "ContractAddress"
 key = false
 
 [[members]]

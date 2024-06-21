@@ -1020,8 +1020,8 @@
     {
       "kind": "DojoContract",
       "address": "0x167359df980dc4435a6baf982375ac517e6f138b5a10d93f2a1acf3c17f5b88",
-      "class_hash": "0x4351c30b407a19fb751406385b98697c8ed072a6b70ef87961ab4c09fdee1fa",
-      "original_class_hash": "0x4351c30b407a19fb751406385b98697c8ed072a6b70ef87961ab4c09fdee1fa",
+      "class_hash": "0x1fb74c53c8d756655f52741d4b6029f3909f3722010422a56c3c351e7dd8ac7",
+      "original_class_hash": "0x1fb74c53c8d756655f52741d4b6029f3909f3722010422a56c3c351e7dd8ac7",
       "base_class_hash": "0x22f3e55b61d86c2ac5239fa3b3b8761f26b9a5c0b5f61ddbd5d756ced498b46",
       "abi": [
         {
@@ -1204,42 +1204,6 @@
           ]
         },
         {
-          "type": "struct",
-          "name": "starkgo::models::move::PlayerMove",
-          "members": [
-            {
-              "name": "move_position",
-              "type": "starkgo::models::board::Position"
-            },
-            {
-              "name": "is_pass",
-              "type": "core::bool"
-            },
-            {
-              "name": "is_resign",
-              "type": "core::bool"
-            }
-          ]
-        },
-        {
-          "type": "enum",
-          "name": "starkgo::models::move::Move",
-          "variants": [
-            {
-              "name": "Play",
-              "type": "starkgo::models::move::PlayerMove"
-            },
-            {
-              "name": "Pass",
-              "type": "starkgo::models::move::PlayerMove"
-            },
-            {
-              "name": "Resign",
-              "type": "starkgo::models::move::PlayerMove"
-            }
-          ]
-        },
-        {
           "type": "interface",
           "name": "starkgo::systems::actions::IActions",
           "items": [
@@ -1289,15 +1253,27 @@
             },
             {
               "type": "function",
-              "name": "move",
+              "name": "play_move",
               "inputs": [
                 {
                   "name": "game_id",
                   "type": "core::felt252"
                 },
                 {
-                  "name": "move",
-                  "type": "starkgo::models::move::Move"
+                  "name": "position",
+                  "type": "starkgo::models::board::Position"
+                }
+              ],
+              "outputs": [],
+              "state_mutability": "external"
+            },
+            {
+              "type": "function",
+              "name": "pass",
+              "inputs": [
+                {
+                  "name": "game_id",
+                  "type": "core::felt252"
                 }
               ],
               "outputs": [],
@@ -1399,6 +1375,11 @@
               "kind": "key"
             },
             {
+              "name": "is_pass",
+              "type": "core::bool",
+              "kind": "data"
+            },
+            {
               "name": "move_nb",
               "type": "core::integer::u32",
               "kind": "data"
@@ -1427,6 +1408,11 @@
             },
             {
               "name": "Moved",
+              "type": "starkgo::systems::actions::actions::Moved",
+              "kind": "nested"
+            },
+            {
+              "name": "Passed",
               "type": "starkgo::systems::actions::actions::Moved",
               "kind": "nested"
             }
@@ -1487,8 +1473,8 @@
           "key": false
         },
         {
-          "name": "capture",
-          "type": "Capture",
+          "name": "prisoners",
+          "type": "Prisoners",
           "key": false
         },
         {
@@ -1497,13 +1483,18 @@
           "key": false
         },
         {
+          "name": "last_passed",
+          "type": "bool",
+          "key": false
+        },
+        {
           "name": "result",
           "type": "GameResult",
           "key": false
         }
       ],
-      "class_hash": "0x400e8ccd7717ca849730ea52c92171409fdd9dcb896e8d58ef3a6d123bd2989",
-      "original_class_hash": "0x400e8ccd7717ca849730ea52c92171409fdd9dcb896e8d58ef3a6d123bd2989",
+      "class_hash": "0x2eb7d06fccaf06bf60b34629b402098ee4f416ac35f1d43d1578343c8a01288",
+      "original_class_hash": "0x2eb7d06fccaf06bf60b34629b402098ee4f416ac35f1d43d1578343c8a01288",
       "abi": [
         {
           "type": "impl",
@@ -1926,7 +1917,7 @@
         },
         {
           "type": "struct",
-          "name": "starkgo::models::board::Capture",
+          "name": "starkgo::models::board::Prisoners",
           "members": [
             {
               "name": "black",
@@ -2011,12 +2002,16 @@
               "type": "core::integer::u32"
             },
             {
-              "name": "capture",
-              "type": "starkgo::models::board::Capture"
+              "name": "prisoners",
+              "type": "starkgo::models::board::Prisoners"
             },
             {
               "name": "new_turn_player",
               "type": "starkgo::models::board::Player"
+            },
+            {
+              "name": "last_passed",
+              "type": "core::bool"
             },
             {
               "name": "result",

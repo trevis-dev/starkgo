@@ -16,6 +16,7 @@ mod actions {
     use starkgo::models::game::{ Prisoners, Games, GameState, GameResult, StartVote, applyMove};
     use starkgo::models::board::{ Board, Player, Position, Row, Column};
     use starknet::{ ContractAddress, get_caller_address };
+    use core::num::traits::Zero;
 
     #[event]
     #[derive(Drop, starknet::Event)]
@@ -41,14 +42,16 @@ mod actions {
             let player_address = get_caller_address();
             let game = get!(world, game_id, (Games));
             assert!(game.state == GameState::Inexistent, "game_id already used");
+            let zero_address: ContractAddress = Zero::zero();
+            check_not_zero(player_address);
             set!(
                 world,
                 (
                     Games {
                         game_id,
                         state: GameState::Created,
-                        controller: Option::Some(player_address),
-                        opponent: Option::None,
+                        controller: player_address,
+                        opponent: zero_address,
                         controller_has_black: StartVote { controller: Option::None, opponent: Option::None },
                         board: 0,
                         previous_board: 0,
@@ -71,51 +74,47 @@ mod actions {
                 },
                 GameState::Created => {
                     let player_address = get_caller_address();
-                    match (game.controller, game.opponent) {
-                        (Option::None, _) => {
-                            panic_with_felt252('Unexpected uncontrolled game');
-                        },
-                        (_, Option::Some(opponent)) => {
-                            panic_with_felt252('Unexpected Created game state');
-                        },
-                        (Option::Some(controller), _) => {
-                            if controller != player_address {
-                                set!(
-                                    world,
-                                    (
-                                        Games {
-                                            game_id,
-                                            state: GameState::Joined,
-                                            controller: game.controller,
-                                            opponent: Option::Some(player_address),
-                                            controller_has_black: StartVote { controller: Option::None, opponent: Option::None },
-                                            board: game.board,
-                                            previous_board: game.previous_board,
-                                            nb_moves: game.nb_moves,
-                                            prisoners: game.prisoners,
-                                            new_turn_player: game.new_turn_player,
-                                            last_passed: game.last_passed,
-                                            result: game.result,
-                                        }
-                                    )
-                                );
-                                newly_joined = true;    
-                            };
-                        }
+                    check_not_zero(player_address);
+                    let zero_address: ContractAddress = Zero::zero();
+                    if game.controller == zero_address {
+                        panic_with_felt252('Unexpected uncontrolled game');
+                    };
+                    if game.opponent != zero_address {
+                        panic_with_felt252('Unexpected Created game state');
+                    };
+                    if player_address != game.controller {
+                        set!(
+                            world,
+                            (
+                                Games {
+                                    game_id,
+                                    state: GameState::Joined,
+                                    controller: game.controller,
+                                    opponent: player_address,
+                                    controller_has_black: StartVote { controller: Option::None, opponent: Option::None },
+                                    board: game.board,
+                                    previous_board: game.previous_board,
+                                    nb_moves: game.nb_moves,
+                                    prisoners: game.prisoners,
+                                    new_turn_player: game.new_turn_player,
+                                    last_passed: game.last_passed,
+                                    result: game.result,
+                                }
+                            )
+                        );
+                        newly_joined = true;
                     };
                 },
                 GameState::Joined => {
                     let player_address = get_caller_address();
-                    match (game.controller, game.opponent) {
-                        (Option::Some(controller), Option::Some(opponent)) => {
-                            if controller != player_address && opponent != player_address {
-                                panic_with_felt252('Game can no longer be joined');
-                            } // else don't panic, all good, just already joined.
-                        },
-                        (_, _) => {
-                            panic_with_felt252('Unexpected Joined game state');
-                        }
-                    }
+                    check_not_zero(player_address);
+                    let zero_address: ContractAddress = Zero::zero();
+                    if game.controller == zero_address || game.opponent == zero_address {
+                        panic_with_felt252('Unexpected Joined game state');
+                    };
+                    if game.controller != player_address && game.opponent != player_address {
+                        panic_with_felt252('Game can no longer be joined');
+                    }; // else don't panic, all good, just already joined.
                 },
                 _ => {
                     panic_with_felt252('Game can no longer be joined');
@@ -126,12 +125,13 @@ mod actions {
 
         fn set_black(ref world: IWorldDispatcher, game_id: felt252, is_controller: bool) {
             let player_address = get_caller_address();
+            check_not_zero(player_address);
             let game = get!(world, game_id, (Games));
             if game.state != GameState::Joined {
                 panic!("Not in 'Joined' state");
             }
             let player_vote = Option::Some(is_controller);
-            if game.controller == Option::Some(player_address) {
+            if game.controller == player_address {
                 let opponent_vote = game.controller_has_black.opponent;
                 if opponent_vote == player_vote {
                     set!(
@@ -170,7 +170,7 @@ mod actions {
                         }
                     );
                 };
-            } else if game.opponent == Option::Some(player_address) {
+            } else if game.opponent == player_address {
                 let controller_vote = game.controller_has_black.controller;
                 if controller_vote == player_vote {
                     set!(
@@ -217,6 +217,7 @@ mod actions {
             assert!(game.state == GameState::Ongoing, "Not in 'Ongoing' state");
 
             let player_address = get_caller_address();
+            check_not_zero(player_address);
             let player: Player = get_player(@game, player_address);
             assert!(player == game.new_turn_player, "Not player's turn.");
 
@@ -239,6 +240,7 @@ mod actions {
             assert!(game.state == GameState::Ongoing, "Not in 'Ongoing' state");
 
             let player_address = get_caller_address();
+            check_not_zero(player_address);
             let player: Player = get_player(@game, player_address);
             assert!(player == game.new_turn_player, "Not player's turn.");
             let mut new_game = game.clone();
@@ -261,10 +263,10 @@ mod actions {
     
     fn get_player(game: @Games, player_address: ContractAddress) -> Player {
         let mut player = Player::None;
-        if *game.controller == Option::Some(player_address) || *game.opponent == Option::Some(player_address) {
+        if *game.controller == player_address || *game.opponent == player_address {
             assert!(*game.state != GameState::Created && *game.state != GameState::Joined, "Players not yet determined");
             let controller_has_black: bool = (*game.controller_has_black.controller).unwrap();  // votes are identical
-            if *game.controller == Option::Some(player_address) {
+            if *game.controller == player_address {
                 if controller_has_black {
                     player =  Player::Black;
                 } else {
@@ -281,5 +283,12 @@ mod actions {
             panic!("Not a player in this game.");
         };
         player
+    }
+
+    #[inline(always)]
+    fn check_not_zero(address: ContractAddress) {
+        if address == Zero::zero() {
+            panic!("Call from 0");
+        };
     }
 }

@@ -297,7 +297,7 @@ mod tests {
     use super::{Board, Capture, Position, Player, Row, Column, add_move, get_move, print_board};
 
     #[test]
-    #[available_gas(14000000)]
+    #[available_gas(13400000)]
     fn test_first_move_gaz() {
         let mut board: Board = 0;
         let _ = add_move(ref board, Player::Black, Position { x: Row::D, y: Column::Six });
@@ -318,7 +318,7 @@ mod tests {
     // print_board(@board);
 
     #[test]
-    #[available_gas(51000000)]
+    #[available_gas(50300000)]
     fn test_multiple_moves() {
         let mut board: Board = 0;
         let _ = add_move(ref board, Player::Black, Position { x: Row::D, y: Column::Six });
