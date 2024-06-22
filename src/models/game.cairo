@@ -22,11 +22,16 @@ impl GameStateIntoByteArray of Into<GameState, ByteArray> {
     }
 }
 
+#[derive(Serde, Copy, Drop, Introspect, PartialEq)]
+struct StartPlayerVote {
+    voted: bool,
+    controller_has_black: bool,
+}
 
 #[derive(Serde, Copy, Drop, Introspect, PartialEq)]
 struct StartVote {
-    controller: Option<bool>,
-    opponent: Option<bool>,
+    controller: StartPlayerVote,
+    opponent: StartPlayerVote,
 }
 
 #[derive(Serde, Copy, Drop, Introspect, PartialEq)]

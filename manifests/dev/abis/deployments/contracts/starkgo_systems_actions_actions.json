@@ -528,6 +528,16 @@
         "name": "Passed",
         "type": "starkgo::systems::actions::actions::Moved",
         "kind": "nested"
+      },
+      {
+        "name": "Started",
+        "type": "starkgo::systems::actions::actions::Moved",
+        "kind": "nested"
+      },
+      {
+        "name": "Finished",
+        "type": "starkgo::systems::actions::actions::Moved",
+        "kind": "nested"
       }
     ]
   }

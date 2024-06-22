@@ -1,6 +1,6 @@
 kind = "DojoModel"
-class_hash = "0x19de84fda8d1d0d460d63339d0083b29762577d0a08908cc72adea12171436b"
-original_class_hash = "0x19de84fda8d1d0d460d63339d0083b29762577d0a08908cc72adea12171436b"
+class_hash = "0x732edd8766b3351e9d983400512b2dc8bc60131c816ec43960083055dfb5936"
+original_class_hash = "0x732edd8766b3351e9d983400512b2dc8bc60131c816ec43960083055dfb5936"
 abi = "manifests/dev/abis/base/models/starkgo_models_game_games.json"
 name = "starkgo::models::game::games"
 

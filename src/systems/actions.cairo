@@ -21,7 +21,7 @@ trait IActions {
 #[dojo::contract]
 mod actions {
     use super::{ IActions };
-    use starkgo::models::game::{ Prisoners, Games, GameState, GameResult, StartVote, applyMove};
+    use starkgo::models::game::{ Prisoners, Games, GameState, GameResult, StartVote, StartPlayerVote, applyMove};
     use starkgo::models::board::{ Board, Player, Position, Row, Column};
     use starknet::{ ContractAddress, get_caller_address };
     use core::num::traits::Zero;
@@ -53,6 +53,7 @@ mod actions {
             assert!(game.state == GameState::Inexistent, "game_id already used");
             let zero_address: ContractAddress = Zero::zero();
             check_not_zero(player_address);
+            let emptyVote = StartPlayerVote { voted: false, controller_has_black: false };
             set!(
                 world,
                 (
@@ -61,7 +62,7 @@ mod actions {
                         state: GameState::Created,
                         controller: player_address,
                         opponent: zero_address,
-                        controller_has_black: StartVote { controller: Option::None, opponent: Option::None },
+                        controller_has_black: StartVote { controller: emptyVote, opponent: emptyVote },
                         board: 0,
                         previous_board: 0,
                         nb_moves: 0,
@@ -100,7 +101,7 @@ mod actions {
                                     state: GameState::Joined,
                                     controller: game.controller,
                                     opponent: player_address,
-                                    controller_has_black: StartVote { controller: Option::None, opponent: Option::None },
+                                    controller_has_black: game.controller_has_black,
                                     board: game.board,
                                     previous_board: game.previous_board,
                                     nb_moves: game.nb_moves,
@@ -139,99 +140,44 @@ mod actions {
             if game.state != GameState::Joined {
                 panic!("Not in 'Joined' state");
             }
-            let player_vote = Option::Some(to_controller);
+            let player_vote = StartPlayerVote { voted: true, controller_has_black: to_controller };
+            let mut new_game = game.clone();
             if game.controller == player_address {
-                let opponent_vote = game.controller_has_black.opponent;
-                if opponent_vote == player_vote {
-                    set!(
-                        world, 
-                        Games {
-                            game_id,
-                            state: GameState::Ongoing,  // Start game
-                            controller: game.controller,
-                            opponent: game.opponent,
-                            controller_has_black: StartVote { controller: player_vote, opponent: opponent_vote },
-                            board: game.board,
-                            previous_board: game.previous_board,
-                            nb_moves: game.nb_moves,
-                            prisoners: game.prisoners,
-                            new_turn_player: Player::Black,
-                            last_passed: game.last_passed,
-                            result: game.result,
-                        }
-                    );
+                if game.controller_has_black.controller == player_vote {
+                    return;
+                };
+                new_game.controller_has_black.controller = player_vote;
+                if new_game.controller_has_black.opponent == player_vote {
+                    new_game.state = GameState::Ongoing;
+                    new_game.new_turn_player = Player::Black;
                     emit!(world, (Event::Started ( Moved {
                         game_id,
                         move_nb: 0,
                         player: Player::None,
                         position: Position { x: Row::None, y: Column::None },
                         is_pass: false,
-                    })));
-                } else {
-                    set!(
-                        world, 
-                        Games {
-                            game_id,
-                            state: game.state,
-                            controller: game.controller,
-                            opponent: game.opponent,
-                            controller_has_black: StartVote { controller: player_vote, opponent: opponent_vote },
-                            board: game.board,
-                            previous_board: game.previous_board,
-                            nb_moves: game.nb_moves,
-                            prisoners: game.prisoners,
-                            new_turn_player: game.new_turn_player,
-                            last_passed: game.last_passed,
-                            result: game.result,
-                        }
-                    );
+                    })));               
                 };
+                set!(world, (new_game));
             } else if game.opponent == player_address {
-                let controller_vote = game.controller_has_black.controller;
-                if controller_vote == player_vote {
-                    set!(
-                        world, 
-                        Games {
-                            game_id,
-                            state: GameState::Ongoing,  // Start game
-                            controller: game.controller,
-                            opponent: game.opponent,
-                            controller_has_black: StartVote { controller: controller_vote, opponent: player_vote },
-                            board: game.board,
-                            previous_board: game.previous_board,
-                            nb_moves: game.nb_moves,
-                            prisoners: game.prisoners,
-                            new_turn_player: Player::Black,
-                            last_passed: game.last_passed,
-                            result: game.result,
-                        }
-                    );
+                if game.controller_has_black.opponent == player_vote {
+                    return;
+                };
+                new_game.controller_has_black.opponent = player_vote;
+                if game.controller_has_black.controller == player_vote {
+                    new_game.state = GameState::Ongoing;
+                    new_game.new_turn_player = Player::Black;
                     emit!(world, (Event::Started ( Moved {
                         game_id,
                         move_nb: 0,
                         player: Player::None,
                         position: Position { x: Row::None, y: Column::None },
                         is_pass: false,
-                    })));
-                } else {
-                    set!(
-                        world, 
-                        Games {
-                            game_id,
-                            state: game.state,
-                            controller: game.controller,
-                            opponent: game.opponent,
-                            controller_has_black: StartVote { controller: controller_vote, opponent: player_vote },
-                            board: game.board,
-                            previous_board: game.previous_board,
-                            nb_moves: game.nb_moves,
-                            prisoners: game.prisoners,
-                            new_turn_player: game.new_turn_player,
-                            last_passed: game.last_passed,
-                            result: game.result,
-                        }
-                    );
+                    })));                
                 };
+                set!(world, (new_game));
+            } else {
+                panic!("Not a player in this game.");
             };
         }
 
@@ -313,12 +259,12 @@ mod actions {
             game.prisoners
         }
     }
-    
+
     fn get_player(game: @Games, player_address: ContractAddress) -> Player {
         let mut player = Player::None;
         if *game.controller == player_address || *game.opponent == player_address {
             assert!(*game.state != GameState::Created && *game.state != GameState::Joined, "Players not yet determined");
-            let controller_has_black: bool = (*game.controller_has_black.controller).unwrap();  // votes are identical
+            let controller_has_black: bool = *game.controller_has_black.controller.controller_has_black;  // votes are identical
             if *game.controller == player_address {
                 if controller_has_black {
                     player =  Player::Black;

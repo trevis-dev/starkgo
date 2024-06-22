@@ -1020,8 +1020,8 @@
     {
       "kind": "DojoContract",
       "address": "0x167359df980dc4435a6baf982375ac517e6f138b5a10d93f2a1acf3c17f5b88",
-      "class_hash": "0x1153d77e8503a583026af07ad475822944b7a79c7626e261de5d7460ee0b134",
-      "original_class_hash": "0x1153d77e8503a583026af07ad475822944b7a79c7626e261de5d7460ee0b134",
+      "class_hash": "0x5b3b97919c75a9b269ae3166e5433c61413c729a263baa7191345fe30fe723d",
+      "original_class_hash": "0x5b3b97919c75a9b269ae3166e5433c61413c729a263baa7191345fe30fe723d",
       "base_class_hash": "0x22f3e55b61d86c2ac5239fa3b3b8761f26b9a5c0b5f61ddbd5d756ced498b46",
       "abi": [
         {
@@ -1553,6 +1553,16 @@
               "name": "Passed",
               "type": "starkgo::systems::actions::actions::Moved",
               "kind": "nested"
+            },
+            {
+              "name": "Started",
+              "type": "starkgo::systems::actions::actions::Moved",
+              "kind": "nested"
+            },
+            {
+              "name": "Finished",
+              "type": "starkgo::systems::actions::actions::Moved",
+              "kind": "nested"
             }
           ]
         }
@@ -1631,8 +1641,8 @@
           "key": false
         }
       ],
-      "class_hash": "0x19de84fda8d1d0d460d63339d0083b29762577d0a08908cc72adea12171436b",
-      "original_class_hash": "0x19de84fda8d1d0d460d63339d0083b29762577d0a08908cc72adea12171436b",
+      "class_hash": "0x732edd8766b3351e9d983400512b2dc8bc60131c816ec43960083055dfb5936",
+      "original_class_hash": "0x732edd8766b3351e9d983400512b2dc8bc60131c816ec43960083055dfb5936",
       "abi": [
         {
           "type": "impl",
@@ -1998,16 +2008,16 @@
           ]
         },
         {
-          "type": "enum",
-          "name": "core::option::Option::<core::bool>",
-          "variants": [
+          "type": "struct",
+          "name": "starkgo::models::game::StartPlayerVote",
+          "members": [
             {
-              "name": "Some",
+              "name": "voted",
               "type": "core::bool"
             },
             {
-              "name": "None",
-              "type": "()"
+              "name": "controller_has_black",
+              "type": "core::bool"
             }
           ]
         },
@@ -2017,11 +2027,11 @@
           "members": [
             {
               "name": "controller",
-              "type": "core::option::Option::<core::bool>"
+              "type": "starkgo::models::game::StartPlayerVote"
             },
             {
               "name": "opponent",
-              "type": "core::option::Option::<core::bool>"
+              "type": "starkgo::models::game::StartPlayerVote"
             }
           ]
         },

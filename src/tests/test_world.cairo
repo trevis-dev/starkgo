@@ -34,7 +34,7 @@ mod tests {
     }
 
     #[test]
-    #[available_gas(19800000)]
+    #[available_gas(21000000)]
     fn test_create() {
         let game_id: felt252 = 1;        
 
@@ -45,7 +45,7 @@ mod tests {
     }
 
     #[test]
-    #[available_gas(31900000)]
+    #[available_gas(33400000)]
     fn test_join() {
         let game_id: felt252 = 1;        
 
@@ -59,7 +59,7 @@ mod tests {
     }
 
     #[test]
-    #[available_gas(57000000)]
+    #[available_gas(60000000)]
     fn test_start() {
         let game_id: felt252 = 1;        
         let controller = starknet::contract_address_const::<0x01>();
@@ -79,7 +79,7 @@ mod tests {
 
     #[test]
     #[should_panic(expected: ("Move forbidden by ko rule", 0x454e545259504f494e545f4641494c4544))]
-    #[available_gas(457000000)]
+    #[available_gas(465000000)]
     // #[ignore]
     fn test_capture_and_ko() {
         let game_id: felt252 = 1;        
@@ -124,7 +124,7 @@ mod tests {
     }
 
     #[test]
-    #[available_gas(253000000)]
+    #[available_gas(261000000)]
     // #[ignore]
     fn test_capture_multiple_groups() {
         let game_id: felt252 = 1;        
@@ -165,7 +165,7 @@ mod tests {
     }
 
     #[test]
-    #[available_gas(116000000)]
+    #[available_gas(120000000)]
     // #[ignore]
     fn test_pass_to_finish() {
         let game_id: felt252 = 1;        
