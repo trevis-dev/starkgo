@@ -74,6 +74,305 @@
   },
   {
     "type": "enum",
+    "name": "starkgo::models::game::GameState",
+    "variants": [
+      {
+        "name": "Inexistent",
+        "type": "()"
+      },
+      {
+        "name": "Created",
+        "type": "()"
+      },
+      {
+        "name": "Joined",
+        "type": "()"
+      },
+      {
+        "name": "Ongoing",
+        "type": "()"
+      },
+      {
+        "name": "Finished",
+        "type": "()"
+      }
+    ]
+  },
+  {
+    "type": "struct",
+    "name": "core::integer::u256",
+    "members": [
+      {
+        "name": "low",
+        "type": "core::integer::u128"
+      },
+      {
+        "name": "high",
+        "type": "core::integer::u128"
+      }
+    ]
+  },
+  {
+    "type": "enum",
+    "name": "starkgo::models::board::Player",
+    "variants": [
+      {
+        "name": "None",
+        "type": "()"
+      },
+      {
+        "name": "Black",
+        "type": "()"
+      },
+      {
+        "name": "White",
+        "type": "()"
+      }
+    ]
+  },
+  {
+    "type": "struct",
+    "name": "starkgo::models::board::Prisoners",
+    "members": [
+      {
+        "name": "black",
+        "type": "core::integer::u32"
+      },
+      {
+        "name": "white",
+        "type": "core::integer::u32"
+      }
+    ]
+  },
+  {
+    "type": "interface",
+    "name": "starkgo::systems::actions::IActions",
+    "items": [
+      {
+        "type": "function",
+        "name": "create_game",
+        "inputs": [
+          {
+            "name": "game_id",
+            "type": "core::felt252"
+          }
+        ],
+        "outputs": [],
+        "state_mutability": "external"
+      },
+      {
+        "type": "function",
+        "name": "join_game",
+        "inputs": [
+          {
+            "name": "game_id",
+            "type": "core::felt252"
+          }
+        ],
+        "outputs": [
+          {
+            "type": "core::bool"
+          }
+        ],
+        "state_mutability": "external"
+      },
+      {
+        "type": "function",
+        "name": "set_black",
+        "inputs": [
+          {
+            "name": "game_id",
+            "type": "core::felt252"
+          },
+          {
+            "name": "to_controller",
+            "type": "core::bool"
+          }
+        ],
+        "outputs": [],
+        "state_mutability": "external"
+      },
+      {
+        "type": "function",
+        "name": "play_move",
+        "inputs": [
+          {
+            "name": "game_id",
+            "type": "core::felt252"
+          },
+          {
+            "name": "x",
+            "type": "core::integer::u32"
+          },
+          {
+            "name": "y",
+            "type": "core::integer::u32"
+          }
+        ],
+        "outputs": [],
+        "state_mutability": "external"
+      },
+      {
+        "type": "function",
+        "name": "pass",
+        "inputs": [
+          {
+            "name": "game_id",
+            "type": "core::felt252"
+          }
+        ],
+        "outputs": [],
+        "state_mutability": "external"
+      },
+      {
+        "type": "function",
+        "name": "game_state",
+        "inputs": [
+          {
+            "name": "game_id",
+            "type": "core::felt252"
+          }
+        ],
+        "outputs": [
+          {
+            "type": "starkgo::models::game::GameState"
+          }
+        ],
+        "state_mutability": "view"
+      },
+      {
+        "type": "function",
+        "name": "board",
+        "inputs": [
+          {
+            "name": "game_id",
+            "type": "core::felt252"
+          }
+        ],
+        "outputs": [
+          {
+            "type": "core::integer::u256"
+          }
+        ],
+        "state_mutability": "view"
+      },
+      {
+        "type": "function",
+        "name": "new_turn_player",
+        "inputs": [
+          {
+            "name": "game_id",
+            "type": "core::felt252"
+          }
+        ],
+        "outputs": [
+          {
+            "type": "starkgo::models::board::Player"
+          }
+        ],
+        "state_mutability": "view"
+      },
+      {
+        "type": "function",
+        "name": "nb_moves",
+        "inputs": [
+          {
+            "name": "game_id",
+            "type": "core::felt252"
+          }
+        ],
+        "outputs": [
+          {
+            "type": "core::integer::u32"
+          }
+        ],
+        "state_mutability": "view"
+      },
+      {
+        "type": "function",
+        "name": "prisoners",
+        "inputs": [
+          {
+            "name": "game_id",
+            "type": "core::felt252"
+          }
+        ],
+        "outputs": [
+          {
+            "type": "starkgo::models::board::Prisoners"
+          }
+        ],
+        "state_mutability": "view"
+      }
+    ]
+  },
+  {
+    "type": "impl",
+    "name": "IDojoInitImpl",
+    "interface_name": "starkgo::systems::actions::actions::IDojoInit"
+  },
+  {
+    "type": "interface",
+    "name": "starkgo::systems::actions::actions::IDojoInit",
+    "items": [
+      {
+        "type": "function",
+        "name": "dojo_init",
+        "inputs": [],
+        "outputs": [],
+        "state_mutability": "view"
+      }
+    ]
+  },
+  {
+    "type": "impl",
+    "name": "UpgradableImpl",
+    "interface_name": "dojo::components::upgradeable::IUpgradeable"
+  },
+  {
+    "type": "interface",
+    "name": "dojo::components::upgradeable::IUpgradeable",
+    "items": [
+      {
+        "type": "function",
+        "name": "upgrade",
+        "inputs": [
+          {
+            "name": "new_class_hash",
+            "type": "core::starknet::class_hash::ClassHash"
+          }
+        ],
+        "outputs": [],
+        "state_mutability": "external"
+      }
+    ]
+  },
+  {
+    "type": "event",
+    "name": "dojo::components::upgradeable::upgradeable::Upgraded",
+    "kind": "struct",
+    "members": [
+      {
+        "name": "class_hash",
+        "type": "core::starknet::class_hash::ClassHash",
+        "kind": "data"
+      }
+    ]
+  },
+  {
+    "type": "event",
+    "name": "dojo::components::upgradeable::upgradeable::Event",
+    "kind": "enum",
+    "variants": [
+      {
+        "name": "Upgraded",
+        "type": "dojo::components::upgradeable::upgradeable::Upgraded",
+        "kind": "nested"
+      }
+    ]
+  },
+  {
+    "type": "enum",
     "name": "starkgo::models::board::Row",
     "variants": [
       {
@@ -175,167 +474,6 @@
       {
         "name": "y",
         "type": "starkgo::models::board::Column"
-      }
-    ]
-  },
-  {
-    "type": "interface",
-    "name": "starkgo::systems::actions::IActions",
-    "items": [
-      {
-        "type": "function",
-        "name": "create_game",
-        "inputs": [
-          {
-            "name": "game_id",
-            "type": "core::felt252"
-          }
-        ],
-        "outputs": [],
-        "state_mutability": "external"
-      },
-      {
-        "type": "function",
-        "name": "join_game",
-        "inputs": [
-          {
-            "name": "game_id",
-            "type": "core::felt252"
-          }
-        ],
-        "outputs": [
-          {
-            "type": "core::bool"
-          }
-        ],
-        "state_mutability": "external"
-      },
-      {
-        "type": "function",
-        "name": "set_black",
-        "inputs": [
-          {
-            "name": "game_id",
-            "type": "core::felt252"
-          },
-          {
-            "name": "is_controller",
-            "type": "core::bool"
-          }
-        ],
-        "outputs": [],
-        "state_mutability": "external"
-      },
-      {
-        "type": "function",
-        "name": "play_move",
-        "inputs": [
-          {
-            "name": "game_id",
-            "type": "core::felt252"
-          },
-          {
-            "name": "position",
-            "type": "starkgo::models::board::Position"
-          }
-        ],
-        "outputs": [],
-        "state_mutability": "external"
-      },
-      {
-        "type": "function",
-        "name": "pass",
-        "inputs": [
-          {
-            "name": "game_id",
-            "type": "core::felt252"
-          }
-        ],
-        "outputs": [],
-        "state_mutability": "external"
-      }
-    ]
-  },
-  {
-    "type": "impl",
-    "name": "IDojoInitImpl",
-    "interface_name": "starkgo::systems::actions::actions::IDojoInit"
-  },
-  {
-    "type": "interface",
-    "name": "starkgo::systems::actions::actions::IDojoInit",
-    "items": [
-      {
-        "type": "function",
-        "name": "dojo_init",
-        "inputs": [],
-        "outputs": [],
-        "state_mutability": "view"
-      }
-    ]
-  },
-  {
-    "type": "impl",
-    "name": "UpgradableImpl",
-    "interface_name": "dojo::components::upgradeable::IUpgradeable"
-  },
-  {
-    "type": "interface",
-    "name": "dojo::components::upgradeable::IUpgradeable",
-    "items": [
-      {
-        "type": "function",
-        "name": "upgrade",
-        "inputs": [
-          {
-            "name": "new_class_hash",
-            "type": "core::starknet::class_hash::ClassHash"
-          }
-        ],
-        "outputs": [],
-        "state_mutability": "external"
-      }
-    ]
-  },
-  {
-    "type": "event",
-    "name": "dojo::components::upgradeable::upgradeable::Upgraded",
-    "kind": "struct",
-    "members": [
-      {
-        "name": "class_hash",
-        "type": "core::starknet::class_hash::ClassHash",
-        "kind": "data"
-      }
-    ]
-  },
-  {
-    "type": "event",
-    "name": "dojo::components::upgradeable::upgradeable::Event",
-    "kind": "enum",
-    "variants": [
-      {
-        "name": "Upgraded",
-        "type": "dojo::components::upgradeable::upgradeable::Upgraded",
-        "kind": "nested"
-      }
-    ]
-  },
-  {
-    "type": "enum",
-    "name": "starkgo::models::board::Player",
-    "variants": [
-      {
-        "name": "None",
-        "type": "()"
-      },
-      {
-        "name": "Black",
-        "type": "()"
-      },
-      {
-        "name": "White",
-        "type": "()"
       }
     ]
   },

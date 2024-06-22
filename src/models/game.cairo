@@ -61,10 +61,10 @@ impl AddEqPrisoners of AddEq<Prisoners> {
     }
 }
 
-fn applyMove(ref new_game: Games, game: @Games, player: Player, position: Position) -> Games {
+fn applyMove(ref new_game: Games, game: @Games, player: Player, x: usize, y: usize) -> Games {
     let previous_board = *game.previous_board;
     let current_board = *game.board;
-    let capture = add_move(ref new_game.board, player, position);
+    let capture = add_move(ref new_game.board, player, x, y);
     if let Option::Some(val) = capture {
         new_game.prisoners += val.into();
     }

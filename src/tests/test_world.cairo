@@ -95,32 +95,32 @@ mod tests {
         actions_system.set_black(game_id, true);
 
         set_contract_address(controller);
-        actions_system.play_move(game_id, Position { x: Row::D, y: Column::Five });
+        actions_system.play_move(game_id, x: Row::D.into(), y: Column::Five.into());
         set_contract_address(opponent);
-        actions_system.play_move(game_id, Position { x: Row::D, y: Column::Six });
+        actions_system.play_move(game_id, x: Row::D.into(), y: Column::Six.into());
         set_contract_address(controller);
-        actions_system.play_move(game_id, Position { x: Row::E, y: Column::Six });
+        actions_system.play_move(game_id, x: Row::E.into(), y: Column::Six.into());
         set_contract_address(opponent);
-        actions_system.play_move(game_id, Position { x: Row::E, y: Column::Five });
+        actions_system.play_move(game_id, x: Row::E.into(), y: Column::Five.into());
         set_contract_address(controller);
-        actions_system.play_move(game_id, Position { x: Row::D, y: Column::Seven });
+        actions_system.play_move(game_id, x: Row::D.into(), y: Column::Seven.into());
         set_contract_address(opponent);
-        actions_system.play_move(game_id, Position { x: Row::F, y: Column::Six });
+        actions_system.play_move(game_id, x: Row::F.into(), y: Column::Six.into());
         set_contract_address(controller);
-        actions_system.play_move(game_id, Position { x: Row::C, y: Column::Six });
+        actions_system.play_move(game_id, x: Row::C.into(), y: Column::Six.into());
 
         let current_game = get!(world, game_id, (Games));
         assert!(current_game.prisoners == Prisoners { black: 1, white: 0 });
         set_contract_address(opponent);
-        actions_system.play_move(game_id, Position { x: Row::E, y: Column::Seven });
+        actions_system.play_move(game_id, x: Row::E.into(), y: Column::Seven.into());
         set_contract_address(controller);
-        actions_system.play_move(game_id, Position { x: Row::E, y: Column::Four });
+        actions_system.play_move(game_id, x: Row::E.into(), y: Column::Four.into());
         set_contract_address(opponent);
-        actions_system.play_move(game_id, Position { x: Row::D, y: Column::Six });
+        actions_system.play_move(game_id, x: Row::D.into(), y: Column::Six.into());
         let current_game = get!(world, game_id, (Games));
         assert!(current_game.prisoners == Prisoners { black: 1, white: 1 });
         set_contract_address(controller);
-        actions_system.play_move(game_id, Position { x: Row::E, y: Column::Six });
+        actions_system.play_move(game_id, x: Row::E.into(), y: Column::Six.into());
     }
 
     #[test]
@@ -141,25 +141,25 @@ mod tests {
         actions_system.set_black(game_id, true);
 
         set_contract_address(controller);
-        actions_system.play_move(game_id, Position { x: Row::A, y: Column::One });
+        actions_system.play_move(game_id, x: Row::A.into(), y: Column::One.into());
         set_contract_address(opponent);
-        actions_system.play_move(game_id, Position { x: Row::B, y: Column::One });
+        actions_system.play_move(game_id, x: Row::B.into(), y: Column::One.into());
         set_contract_address(controller);
-        actions_system.play_move(game_id, Position { x: Row::A, y: Column::Three });
+        actions_system.play_move(game_id, x: Row::A.into(), y: Column::Three.into());
         set_contract_address(opponent);
-        actions_system.play_move(game_id, Position { x: Row::B, y: Column::Three });
+        actions_system.play_move(game_id, x: Row::B.into(), y: Column::Three.into());
         set_contract_address(controller);
-        actions_system.play_move(game_id, Position { x: Row::B, y: Column::Two });
+        actions_system.play_move(game_id, x: Row::B.into(), y: Column::Two.into());
         set_contract_address(opponent);
-        actions_system.play_move(game_id, Position { x: Row::C, y: Column::Two });
+        actions_system.play_move(game_id, x: Row::C.into(), y: Column::Two.into());
         set_contract_address(controller);
-        actions_system.play_move(game_id, Position { x: Row::C, y: Column::Three });
+        actions_system.play_move(game_id, x: Row::C.into(), y: Column::Three.into());
         set_contract_address(opponent);
-        actions_system.play_move(game_id, Position { x: Row::A, y: Column::Four });
+        actions_system.play_move(game_id, x: Row::A.into(), y: Column::Four.into());
         set_contract_address(controller);
-        actions_system.play_move(game_id, Position { x: Row::D, y: Column::Two });
+        actions_system.play_move(game_id, x: Row::D.into(), y: Column::Two.into());
         set_contract_address(opponent);
-        actions_system.play_move(game_id, Position { x: Row::A, y: Column::Two });
+        actions_system.play_move(game_id, x: Row::A.into(), y: Column::Two.into());
         let current_game = get!(world, game_id, (Games));
         assert!(current_game.prisoners == Prisoners { black: 0, white: 3 });
     }
@@ -181,7 +181,7 @@ mod tests {
         actions_system.set_black(game_id, true);
 
         set_contract_address(controller);
-        actions_system.play_move(game_id, Position { x: Row::C, y: Column::Three });
+        actions_system.play_move(game_id, x: Row::C.into(), y: Column::Three.into());
 
         let current_game = get!(world, game_id, (Games));
         assert!(current_game.last_passed == false, "No one passed yet.");

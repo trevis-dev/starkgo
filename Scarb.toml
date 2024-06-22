@@ -7,7 +7,7 @@ version = "0.1.0"
 sierra-replace-ids = true
 
 [scripts]
-migrate = "sozo build && sozo migrate apply"
+migrate = "sozo build && sozo migrate apply --name starkgo"
 
 [dependencies]
 dojo = { git = "https://github.com/dojoengine/dojo", tag = "v0.7.2" }
@@ -32,14 +32,10 @@ private_key = "0x14d6672dcb4b77ca36a887e9a11cd9d637d5012468175829e9c6e770c61642"
 world_address = "0x7bf4dbc57ac4213d82f13516bae388f7980897fc16fbc64eb6d156a9d739030"  # Same
 
 [tool.dojo.world]
-name = "Dojo starter"
-description = "The official Dojo Starter guide, the quickest and most streamlined way to get your Dojo Autonomous World up and running. This guide will assist you with the initial setup, from cloning the repository to deploying your world."
-cover_uri = "file://assets/cover.png"
-icon_uri = "file://assets/icon.png"
-website = "https://github.com/dojoengine/dojo-starter"
+name = "Starkgo"
+description = "A Go game implementation using the Dojo Engine"
+website = "https://github.com/trevis-dev/starkgo"
 
 [tool.dojo.world.socials]
-x = "https://x.com/ohayo_dojo"
-discord = "https://discord.gg/FB2wR6uF"
-github = "https://github.com/dojoengine/dojo-starter"
-telegram = "https://t.me/dojoengine"
+x = "https://x.com/_Teandy"
+github = "https://github.com/trevis-dev/starkgo"

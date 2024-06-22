@@ -1,13 +1,21 @@
 
-use starkgo::models::board::{Position};
+use starkgo::models::{
+    board::{Position},
+    game::{GameState, Player, Prisoners},
+};
 
 #[dojo::interface]
 trait IActions {
     fn create_game(ref world: IWorldDispatcher, game_id: felt252);
     fn join_game(ref world: IWorldDispatcher, game_id: felt252) -> bool;
-    fn set_black(ref world: IWorldDispatcher, game_id: felt252, is_controller: bool);
-    fn play_move(ref world: IWorldDispatcher, game_id: felt252, position: Position);
+    fn set_black(ref world: IWorldDispatcher, game_id: felt252, to_controller: bool);
+    fn play_move(ref world: IWorldDispatcher, game_id: felt252, x: usize, y: usize);
     fn pass(ref world: IWorldDispatcher, game_id: felt252);
+    fn game_state(world: @IWorldDispatcher, game_id: felt252) -> GameState;
+    fn board(world: @IWorldDispatcher, game_id: felt252) -> u256;
+    fn new_turn_player(world: @IWorldDispatcher, game_id: felt252) -> Player;
+    fn nb_moves(world: @IWorldDispatcher, game_id: felt252) -> usize;
+    fn prisoners(world: @IWorldDispatcher, game_id: felt252) -> Prisoners;
 }
 
 #[dojo::contract]
@@ -123,14 +131,14 @@ mod actions {
             newly_joined
         }
 
-        fn set_black(ref world: IWorldDispatcher, game_id: felt252, is_controller: bool) {
+        fn set_black(ref world: IWorldDispatcher, game_id: felt252, to_controller: bool) {
             let player_address = get_caller_address();
             check_not_zero(player_address);
             let game = get!(world, game_id, (Games));
             if game.state != GameState::Joined {
                 panic!("Not in 'Joined' state");
             }
-            let player_vote = Option::Some(is_controller);
+            let player_vote = Option::Some(to_controller);
             if game.controller == player_address {
                 let opponent_vote = game.controller_has_black.opponent;
                 if opponent_vote == player_vote {
@@ -212,7 +220,7 @@ mod actions {
             };
         }
 
-        fn play_move(ref world: IWorldDispatcher, game_id: felt252, position: Position) {
+        fn play_move(ref world: IWorldDispatcher, game_id: felt252, x: usize, y: usize) {
             let game = get!(world, game_id, (Games));
             assert!(game.state == GameState::Ongoing, "Not in 'Ongoing' state");
 
@@ -222,13 +230,13 @@ mod actions {
             assert!(player == game.new_turn_player, "Not player's turn.");
 
             let mut new_game = game.clone();
-            applyMove(ref new_game, @game, player, position);
+            applyMove(ref new_game, @game, player, x, y);
             new_game.last_passed = false;
             emit!(world, Moved {
                 game_id,
                 move_nb: new_game.nb_moves,
                 player,
-                position,
+                position: Position { x: x.into(), y: y.into() },
                 is_pass: false
             });
 
@@ -258,6 +266,30 @@ mod actions {
                 is_pass: true,
             });
             set!(world, (new_game));
+        }
+        fn game_state(world: @IWorldDispatcher, game_id: felt252) -> GameState {
+            let game = get!(world, game_id, (Games));
+            game.state
+        }
+        fn board(world: @IWorldDispatcher, game_id: felt252) -> u256 {
+            let game = get!(world, game_id, (Games));
+            assert!(game.state != GameState::Inexistent, "No game with that game_id");
+            game.board
+        }
+        fn new_turn_player(world: @IWorldDispatcher, game_id: felt252) -> Player {
+            let game = get!(world, game_id, (Games));
+            assert!(game.state != GameState::Inexistent, "No game with that game_id");
+            game.new_turn_player
+        }
+        fn nb_moves(world: @IWorldDispatcher, game_id: felt252) -> usize {
+            let game = get!(world, game_id, (Games));
+            assert!(game.state != GameState::Inexistent, "No game with that game_id");
+            game.nb_moves
+        }
+        fn prisoners(world: @IWorldDispatcher, game_id: felt252) -> Prisoners {
+            let game = get!(world, game_id, (Games));
+            assert!(game.state != GameState::Inexistent, "No game with that game_id");
+            game.prisoners
         }
     }
     

@@ -95,9 +95,7 @@ fn print_board(board: @Board) {
 }
 
 #[inline(always)]
-fn check_move_allowed(board: @Board, player: Player, position: Position) -> (usize, usize, u8) {
-    let x: usize = position.x.into();
-    let y: usize = position.y.into();
+fn check_move_allowed(board: @Board, player: Player, x: usize, y: usize) -> (usize, usize, u8) {
     assert!(x < GRID_SIZE && y < GRID_SIZE, "Coordinates out of bounds");
     assert!(_get_value(board, x, y) == 0, "Occupied");
     let value: u8 = player.into();
@@ -105,15 +103,13 @@ fn check_move_allowed(board: @Board, player: Player, position: Position) -> (usi
     (x, y, value)
 }
 
-fn add_move(ref board: Board, player: Player, position: Position) -> Option<Capture> {
-    let (x, y, value) = check_move_allowed(@board, player, position);
-    let capture = _set_value(ref board, x, y, value);
+fn add_move(ref board: Board, player: Player, x: usize, y: usize) -> Option<Capture> {
+    check_move_allowed(@board, player, x, y);
+    let capture = _set_value(ref board, x, y, player.into());
     capture
 }
 
-fn get_move(board: @Board, position: Position) -> u8 {
-    let x: usize = position.x.into();
-    let y: usize = position.y.into();
+fn get_move(board: @Board, x: usize, y: usize) -> u8 {
     assert!(x < GRID_SIZE && y < GRID_SIZE, "Coordinates out of bounds");
     _get_value(board, x, y)
 }
@@ -174,6 +170,23 @@ impl RowIntoUsize of Into<Row, usize> {
         }
     }
 }
+impl UsizeIntoRow of Into<usize, Row> {
+    fn into(self: usize) -> Row {
+        match self {
+            0 => Row::A,
+            1 => Row::B,
+            2 => Row::C,
+            3 => Row::D,
+            4 => Row::E,
+            5 => Row::F,
+            6 => Row::G,
+            7 => Row::H,
+            8 => Row::I,
+            _ => Row::None,
+        }
+    }
+}
+
 impl RowIntoByteArray of Into<Row, ByteArray> {
     fn into(self: Row) -> ByteArray {
         match self {
@@ -237,7 +250,22 @@ impl ColmumnIntoByteArray of Into<Column, ByteArray> {
         }
     }
 }
-
+impl UsizeIntoColmumn of Into<usize, Column> {
+    fn into(self: usize) -> Column {
+        match self {
+            0 => Column::One,
+            1 => Column::Two,
+            2 => Column::Three,
+            3 => Column::Four,
+            4 => Column::Five,
+            5 => Column::Six,
+            6 => Column::Seven,
+            7 => Column::Eight,
+            8 => Column::Nine,
+            _ => Column::None,
+        }
+    }
+}
 #[derive(Serde, Copy, Drop, Introspect, PartialEq)]
 enum Player {
     None,
@@ -300,7 +328,7 @@ mod tests {
     #[available_gas(13400000)]
     fn test_first_move_gaz() {
         let mut board: Board = 0;
-        let _ = add_move(ref board, Player::Black, Position { x: Row::D, y: Column::Six });
+        let _ = add_move(ref board, Player::Black, x: Row::D.into(), y: Column::Six.into());
     }
 
     #[test]
@@ -310,8 +338,8 @@ mod tests {
         // let _ = add_move(ref board, Player::Black, Position { x: Row::D, y: Column::Six });
         let mut board: Board = 18446744073709551616;
         // white plays elsewhere
-        assert(get_move(@board, Position { x: Row::D, y: Column:: Six}) == Player::Black.into(), 'Wrong player');
-        assert(get_move(@board, Position { x: Row::E, y: Column:: Five}) == Player::None.into(), 'Wrong player');
+        assert(get_move(@board, x: Row::D.into(), y: Column:: Six.into()) == Player::Black.into(), 'Wrong player');
+        assert(get_move(@board, x: Row::E.into(), y: Column:: Five.into()) == Player::None.into(), 'Wrong player');
     }
 
     // println!("board: {board}");
@@ -321,21 +349,21 @@ mod tests {
     #[available_gas(50300000)]
     fn test_multiple_moves() {
         let mut board: Board = 0;
-        let _ = add_move(ref board, Player::Black, Position { x: Row::D, y: Column::Six });
+        let _ = add_move(ref board, Player::Black, x: Row::D.into(), y: Column::Six.into() );
         assert(board == 18446744073709551616, 'Incorrect state after 1st move.');
-        let _ = add_move(ref board, Player::White, Position  {x: Row::E, y: Column::Five });
+        let _ = add_move(ref board, Player::White, x: Row::E.into(), y: Column::Five.into() );
         assert(board == 2417870085973332058963968, 'Incorrect state after 2nd move.');
 
-        let _ = add_move(ref board, Player::Black, Position { x: Row::I, y: Column::Nine });
+        let _ = add_move(ref board, Player::Black, x: Row::I.into(), y: Column::Nine.into() );
         let _ = assert(board == 1461501637330902918203687250586368992987991506944, 'Incorrect state after 3rd move.');
-        assert(get_move(@board, Position { x: Row::E, y: Column:: Five }) == Player::White.into(), 'Wrong player');
+        assert(get_move(@board, x: Row::E.into(), y: Column::Five.into() ) == Player::White.into(), 'Wrong player');
     }
 
     #[test]
     #[should_panic(expected: ("Occupied", ))]
     fn test_position_occupied() {
         let mut board: Board = 18446744073709551616;
-        let _ = add_move(ref board, Player::Black, Position { x: Row::D, y: Column::Six });
+        let _ = add_move(ref board, Player::Black, x: Row::D.into(), y: Column::Six.into());
     }
     
     #[test]
@@ -352,7 +380,7 @@ mod tests {
         // =>
         let mut board: Board = 1208954642652244345880576;
         // white plays elsewhere
-        let capture = add_move(ref board, Player::Black, Position { x: Row::C, y: Column::Five });
+        let capture = add_move(ref board, Player::Black, x: Row::C.into(), y: Column::Five.into());
         assert(capture == Option::Some(Capture { black: 0, white: 1 }), 'Incorrect capture');
         assert(board == 1208945419297799677149184, 'Incorrect state after capture.');
     }
