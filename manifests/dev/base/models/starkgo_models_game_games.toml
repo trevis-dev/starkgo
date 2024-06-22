@@ -1,6 +1,6 @@
 kind = "DojoModel"
-class_hash = "0x732edd8766b3351e9d983400512b2dc8bc60131c816ec43960083055dfb5936"
-original_class_hash = "0x732edd8766b3351e9d983400512b2dc8bc60131c816ec43960083055dfb5936"
+class_hash = "0x56fa6563ab2da91406a41e39424ffdebd78974480c2e6645ef76a6588811af5"
+original_class_hash = "0x56fa6563ab2da91406a41e39424ffdebd78974480c2e6645ef76a6588811af5"
 abi = "manifests/dev/abis/base/models/starkgo_models_game_games.json"
 name = "starkgo::models::game::games"
 
@@ -57,6 +57,11 @@ key = false
 [[members]]
 name = "last_passed"
 type = "bool"
+key = false
+
+[[members]]
+name = "last_move"
+type = "(usize, usize)"
 key = false
 
 [[members]]

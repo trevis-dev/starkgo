@@ -69,6 +69,7 @@ mod actions {
                         prisoners: Prisoners { black: 0, white: 0 },
                         new_turn_player: Player::None,
                         last_passed: false,
+                        last_move: (0, 0),
                         result: GameResult { winner: Player::None, is_resign: false, double_score_diff: 0},
                     }
                 )
@@ -108,6 +109,7 @@ mod actions {
                                     prisoners: game.prisoners,
                                     new_turn_player: game.new_turn_player,
                                     last_passed: game.last_passed,
+                                    last_move: game.last_move,
                                     result: game.result,
                                 }
                             )
@@ -192,7 +194,6 @@ mod actions {
 
             let mut new_game = game.clone();
             applyMove(ref new_game, @game, player, x, y);
-            new_game.last_passed = false;
             emit!(world, (Event::Moved (Moved {
                 game_id,
                 move_nb: new_game.nb_moves,

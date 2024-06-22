@@ -56,6 +56,7 @@ struct Games {
     prisoners: Prisoners,
     new_turn_player: Player,
     last_passed: bool,
+    last_move: (usize, usize),
     result: GameResult,
 }
 
@@ -77,5 +78,7 @@ fn applyMove(ref new_game: Games, game: @Games, player: Player, x: usize, y: usi
     new_game.previous_board = current_board;
     new_game.new_turn_player = ~player;
     new_game.nb_moves += 1;
+    new_game.last_passed = false;
+    new_game.last_move = (x, y);
     new_game
 }
