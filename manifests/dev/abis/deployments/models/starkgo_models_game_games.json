@@ -503,6 +503,10 @@
         "type": "core::bool"
       },
       {
+        "name": "last_move",
+        "type": "(core::integer::u32, core::integer::u32)"
+      },
+      {
         "name": "result",
         "type": "starkgo::models::game::GameResult"
       }
