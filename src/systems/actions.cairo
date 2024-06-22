@@ -30,8 +30,11 @@ mod actions {
     #[derive(Drop, starknet::Event)]
     enum Event {
         Moved: Moved,
-        Passed: Moved
+        Passed: Moved,
+        Started: Moved,
+        Finished: Moved,
     }
+
     #[derive(Drop, Serde, starknet::Event)]
     struct Moved {
         #[key]
@@ -41,8 +44,6 @@ mod actions {
         player: Player,
         position: Position
     }
-
-
 
     #[abi(embed_v0)]
     impl ActionsImpl of IActions<ContractState> {
@@ -158,7 +159,14 @@ mod actions {
                             last_passed: game.last_passed,
                             result: game.result,
                         }
-                    );    
+                    );
+                    emit!(world, (Event::Started ( Moved {
+                        game_id,
+                        move_nb: 0,
+                        player: Player::None,
+                        position: Position { x: Row::None, y: Column::None },
+                        is_pass: false,
+                    })));
                 } else {
                     set!(
                         world, 
@@ -197,7 +205,14 @@ mod actions {
                             last_passed: game.last_passed,
                             result: game.result,
                         }
-                    );    
+                    );
+                    emit!(world, (Event::Started ( Moved {
+                        game_id,
+                        move_nb: 0,
+                        player: Player::None,
+                        position: Position { x: Row::None, y: Column::None },
+                        is_pass: false,
+                    })));
                 } else {
                     set!(
                         world, 
@@ -232,14 +247,13 @@ mod actions {
             let mut new_game = game.clone();
             applyMove(ref new_game, @game, player, x, y);
             new_game.last_passed = false;
-            emit!(world, Moved {
+            emit!(world, (Event::Moved (Moved {
                 game_id,
                 move_nb: new_game.nb_moves,
                 player,
                 position: Position { x: x.into(), y: y.into() },
                 is_pass: false
-            });
-
+            })));
             set!(world, (new_game));
         }
 
@@ -257,14 +271,21 @@ mod actions {
             new_game.last_passed = true;
             if game.last_passed {
                 new_game.state = GameState::Finished;
+                emit!(world,( Event::Finished ( Moved {
+                    game_id,
+                    move_nb: new_game.nb_moves,
+                    player: Player::None,
+                    position: Position { x: Row::None, y: Column::None },
+                    is_pass: true,
+                })));
             }
-            emit!(world, Moved {
+            emit!(world, (Event::Passed ( Moved {
                 game_id,
                 move_nb: new_game.nb_moves,
                 player,
                 position : Position {x: Row::None, y: Column::None},
                 is_pass: true,
-            });
+            })));
             set!(world, (new_game));
         }
         fn game_state(world: @IWorldDispatcher, game_id: felt252) -> GameState {

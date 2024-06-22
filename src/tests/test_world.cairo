@@ -59,7 +59,7 @@ mod tests {
     }
 
     #[test]
-    #[available_gas(56400000)]
+    #[available_gas(57000000)]
     fn test_start() {
         let game_id: felt252 = 1;        
         let controller = starknet::contract_address_const::<0x01>();
@@ -165,7 +165,7 @@ mod tests {
     }
 
     #[test]
-    #[available_gas(115000000)]
+    #[available_gas(116000000)]
     // #[ignore]
     fn test_pass_to_finish() {
         let game_id: felt252 = 1;        
