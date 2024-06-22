@@ -72,7 +72,7 @@ fn remove_dead_stones(board: @u256, x: usize, y:usize, value: u8) -> Option<Move
                 };
                 while let Option::Some(stone_position_int) = group.stones_mask.pop_front() {
                     positions_checked.insert(stone_position_int.into(), true);
-                    if group.n_liberties == 0 {
+                    if (group.n_liberties == 0 && group.value != value) {
                         capture.append(stone_position_int);
                     };
                 };

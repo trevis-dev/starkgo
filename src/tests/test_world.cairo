@@ -79,7 +79,7 @@ mod tests {
 
     #[test]
     #[should_panic(expected: ("Move forbidden by ko rule", 0x454e545259504f494e545f4641494c4544))]
-    #[available_gas(485000000)]
+    #[available_gas(491000000)]
     // #[ignore]
     fn test_capture_and_ko() {
         let game_id: felt252 = 1;        

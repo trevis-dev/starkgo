@@ -384,4 +384,23 @@ mod tests {
         assert(capture == Option::Some(Capture { black: 0, white: 1 }), 'Incorrect capture');
         assert(board == 1208945419297799677149184, 'Incorrect state after capture.');
     }
+
+    #[test]
+    #[available_gas(25300000)]
+    fn test_capture_not_suicide() {
+        // let mut board: Board = 0;
+        // let _ = add_move(ref board, Player::Black,  x: Row::D.into(), y: Column::Six.into());
+        // let _ = add_move(ref board, Player::White, x: Row::D.into(), y: Column::Five.into());
+        // let _ = add_move(ref board, Player::Black,  x: Row::E.into(), y: Column::Five.into());
+        // let _ = add_move(ref board, Player::Black,  x: Row::D.into(), y: Column::Four.into());
+        // let _ = add_move(ref board, Player::White, x: Row::C.into(), y: Column::Four.into());
+        // let _ = add_move(ref board, Player::White, x: Row::C.into(), y: Column::Six.into());
+        // let _ = add_move(ref board, Player::White, x: Row::B.into(), y: Column::Five.into());
+        // =>
+        let mut board: Board = 1208954642801778061475840;
+
+        let capture = add_move(ref board, Player::Black, x: Row::C.into(), y: Column::Five.into());
+        assert(capture == Option::Some(Capture { black: 0, white: 1 }), 'Incorrect capture');
+        assert(board == 1208945419447333392744448, 'Incorrect state after capture.');
+    }
 }
