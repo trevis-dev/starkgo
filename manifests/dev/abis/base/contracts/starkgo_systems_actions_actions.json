@@ -93,6 +93,10 @@
         "type": "()"
       },
       {
+        "name": "Counting",
+        "type": "()"
+      },
+      {
         "name": "Finished",
         "type": "()"
       }
@@ -219,6 +223,34 @@
           {
             "name": "game_id",
             "type": "core::felt252"
+          }
+        ],
+        "outputs": [],
+        "state_mutability": "external"
+      },
+      {
+        "type": "function",
+        "name": "resign",
+        "inputs": [
+          {
+            "name": "game_id",
+            "type": "core::felt252"
+          }
+        ],
+        "outputs": [],
+        "state_mutability": "external"
+      },
+      {
+        "type": "function",
+        "name": "mark_dead_stones",
+        "inputs": [
+          {
+            "name": "game_id",
+            "type": "core::felt252"
+          },
+          {
+            "name": "stones_mask",
+            "type": "core::integer::u128"
           }
         ],
         "outputs": [],
@@ -493,6 +525,11 @@
         "kind": "data"
       },
       {
+        "name": "is_resign",
+        "type": "core::bool",
+        "kind": "data"
+      },
+      {
         "name": "move_nb",
         "type": "core::integer::u32",
         "kind": "data"
@@ -531,6 +568,16 @@
       },
       {
         "name": "Started",
+        "type": "starkgo::systems::actions::actions::Moved",
+        "kind": "nested"
+      },
+      {
+        "name": "CountingStart",
+        "type": "starkgo::systems::actions::actions::Moved",
+        "kind": "nested"
+      },
+      {
+        "name": "Resigned",
         "type": "starkgo::systems::actions::actions::Moved",
         "kind": "nested"
       },

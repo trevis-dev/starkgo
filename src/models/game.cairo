@@ -7,6 +7,7 @@ enum GameState {
     Created,
     Joined,
     Ongoing,
+    Counting,
     Finished,
 }
 
@@ -17,6 +18,7 @@ impl GameStateIntoByteArray of Into<GameState, ByteArray> {
             GameState::Created => "Created",
             GameState::Joined => "Joined",
             GameState::Ongoing => "Ongoing",
+            GameState::Counting => "Couting",
             GameState::Finished => "Finished"
         }
     }
@@ -32,6 +34,12 @@ struct StartPlayerVote {
 struct StartVote {
     controller: StartPlayerVote,
     opponent: StartPlayerVote,
+}
+
+#[derive(Serde, Copy, Drop, Introspect, PartialEq)]
+struct DeadStonesVote {
+    controller: u128,
+    opponent: u128,
 }
 
 #[derive(Serde, Copy, Drop, Introspect, PartialEq)]
@@ -57,6 +65,7 @@ struct Games {
     new_turn_player: Player,
     last_passed: bool,
     last_move: (usize, usize),
+    dead_stones: DeadStonesVote,
     result: GameResult,
 }
 

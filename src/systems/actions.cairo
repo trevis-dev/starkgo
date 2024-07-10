@@ -11,6 +11,9 @@ trait IActions {
     fn set_black(ref world: IWorldDispatcher, game_id: felt252, to_controller: bool);
     fn play_move(ref world: IWorldDispatcher, game_id: felt252, x: usize, y: usize);
     fn pass(ref world: IWorldDispatcher, game_id: felt252);
+    fn resign(ref world: IWorldDispatcher, game_id: felt252);
+    fn mark_dead_stones(ref world: IWorldDispatcher, game_id: felt252, stones_mask: u128);
+    
     fn game_state(world: @IWorldDispatcher, game_id: felt252) -> GameState;
     fn board(world: @IWorldDispatcher, game_id: felt252) -> u256;
     fn new_turn_player(world: @IWorldDispatcher, game_id: felt252) -> Player;
@@ -21,7 +24,7 @@ trait IActions {
 #[dojo::contract]
 mod actions {
     use super::{ IActions };
-    use starkgo::models::game::{ Prisoners, Games, GameState, GameResult, StartVote, StartPlayerVote, applyMove};
+    use starkgo::models::game::{ DeadStonesVote, Prisoners, Games, GameState, GameResult, StartVote, StartPlayerVote, applyMove};
     use starkgo::models::board::{ Board, Player, Position, Row, Column};
     use starknet::{ ContractAddress, get_caller_address };
     use core::num::traits::Zero;
@@ -32,6 +35,8 @@ mod actions {
         Moved: Moved,
         Passed: Moved,
         Started: Moved,
+        CountingStart: Moved,
+        Resigned: Moved,
         Finished: Moved,
     }
 
@@ -40,6 +45,7 @@ mod actions {
         #[key]
         game_id: felt252,
         is_pass: bool,
+        is_resign: bool,
         move_nb: u32,
         player: Player,
         position: Position
@@ -70,6 +76,7 @@ mod actions {
                         new_turn_player: Player::None,
                         last_passed: false,
                         last_move: (0, 0),
+                        dead_stones: DeadStonesVote { controller: 0xffffffffffffffffffffffffffffffff, opponent: 0xffffffffffffffffffffffffffffffff },
                         result: GameResult { winner: Player::None, is_resign: false, double_score_diff: 0},
                     }
                 )
@@ -110,6 +117,7 @@ mod actions {
                                     new_turn_player: game.new_turn_player,
                                     last_passed: game.last_passed,
                                     last_move: game.last_move,
+                                    dead_stones: game.dead_stones,
                                     result: game.result,
                                 }
                             )
@@ -158,6 +166,7 @@ mod actions {
                         player: Player::None,
                         position: Position { x: Row::None, y: Column::None },
                         is_pass: false,
+                        is_resign: false,
                     })));               
                 };
                 set!(world, (new_game));
@@ -175,6 +184,7 @@ mod actions {
                         player: Player::None,
                         position: Position { x: Row::None, y: Column::None },
                         is_pass: false,
+                        is_resign: false,
                     })));                
                 };
                 set!(world, (new_game));
@@ -199,7 +209,8 @@ mod actions {
                 move_nb: new_game.nb_moves,
                 player,
                 position: Position { x: x.into(), y: y.into() },
-                is_pass: false
+                is_pass: false,
+                is_resign: false,
             })));
             set!(world, (new_game));
         }
@@ -217,13 +228,14 @@ mod actions {
             new_game.nb_moves += 1;
             new_game.last_passed = true;
             if game.last_passed {
-                new_game.state = GameState::Finished;
-                emit!(world,( Event::Finished ( Moved {
+                new_game.state = GameState::Counting;
+                emit!(world,( Event::CountingStart ( Moved {
                     game_id,
                     move_nb: new_game.nb_moves,
                     player: Player::None,
                     position: Position { x: Row::None, y: Column::None },
                     is_pass: true,
+                    is_resign: false,
                 })));
             }
             emit!(world, (Event::Passed ( Moved {
@@ -232,9 +244,75 @@ mod actions {
                 player,
                 position : Position {x: Row::None, y: Column::None},
                 is_pass: true,
+                is_resign: false,
             })));
             set!(world, (new_game));
         }
+
+        fn resign(ref world: IWorldDispatcher, game_id: felt252) {
+            let game = get!(world, game_id, (Games));
+            assert!(game.state == GameState::Ongoing, "Not in 'Ongoing' state");
+
+            let player_address = get_caller_address();
+            check_not_zero(player_address);
+            let player: Player = get_player(@game, player_address);
+            assert!(player == game.new_turn_player, "Not player's turn.");
+            let mut new_game = game.clone();
+            if player == Player::White {
+                new_game.result = GameResult { winner: Player::Black, is_resign: true, double_score_diff: 0 };
+            } else {
+                new_game.result = GameResult { winner: Player::White, is_resign: true, double_score_diff: 0 };
+            }
+            
+            new_game.state = GameState::Finished;
+            emit!(world,( Event::Finished ( Moved {
+                game_id,
+                move_nb: new_game.nb_moves,
+                player,
+                position: Position { x: Row::None, y: Column::None },
+                is_pass: false,
+                is_resign: true,
+            })));
+            set!(world, (new_game));
+        }
+
+        fn mark_dead_stones(ref world: IWorldDispatcher, game_id: felt252, stones_mask: u128) {
+            let player_address = get_caller_address();
+            check_not_zero(player_address);
+            let game = get!(world, game_id, (Games));
+            if game.state != GameState::Counting {
+                panic!("Not in 'Counting' state");
+            }
+            let mut new_game = game.clone();
+            if game.controller == player_address {
+                if game.dead_stones.controller == stones_mask {
+                    return;
+                }
+                new_game.dead_stones = DeadStonesVote { controller: stones_mask, opponent: new_game.dead_stones.opponent };
+                
+            } else if game.opponent == player_address {
+                if game.dead_stones.opponent == stones_mask {
+                    return;
+                }
+                new_game.dead_stones = DeadStonesVote { controller: new_game.dead_stones.controller, opponent: stones_mask };
+            } else {
+                panic!("Not a player in this game.");
+            };
+            if new_game.dead_stones.controller == new_game.dead_stones.opponent {
+                new_game.state = GameState::Finished;
+                score_game(ref new_game);
+                emit!(world,( Event::Finished ( Moved {
+                    game_id,
+                    move_nb: new_game.nb_moves,
+                    player: Player::None,
+                    position: Position { x: Row::None, y: Column::None },
+                    is_pass: false,
+                    is_resign: false,
+                })));
+            }
+            set!(world, (new_game));
+        }
+
         fn game_state(world: @IWorldDispatcher, game_id: felt252) -> GameState {
             let game = get!(world, game_id, (Games));
             game.state
@@ -283,6 +361,10 @@ mod actions {
             panic!("Not a player in this game.");
         };
         player
+    }
+
+    fn score_game(ref game: Games) {
+        // todo
     }
 
     #[inline(always)]

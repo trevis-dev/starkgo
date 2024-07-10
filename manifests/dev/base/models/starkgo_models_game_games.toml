@@ -1,6 +1,6 @@
 kind = "DojoModel"
-class_hash = "0x56fa6563ab2da91406a41e39424ffdebd78974480c2e6645ef76a6588811af5"
-original_class_hash = "0x56fa6563ab2da91406a41e39424ffdebd78974480c2e6645ef76a6588811af5"
+class_hash = "0x41850db2bdf39446f0061e450df67fb5c69d4c515efa192edb0608e4f411023"
+original_class_hash = "0x41850db2bdf39446f0061e450df67fb5c69d4c515efa192edb0608e4f411023"
 abi = "manifests/dev/abis/base/models/starkgo_models_game_games.json"
 name = "starkgo::models::game::games"
 
@@ -62,6 +62,11 @@ key = false
 [[members]]
 name = "last_move"
 type = "(usize, usize)"
+key = false
+
+[[members]]
+name = "dead_stones"
+type = "DeadStonesVote"
 key = false
 
 [[members]]
